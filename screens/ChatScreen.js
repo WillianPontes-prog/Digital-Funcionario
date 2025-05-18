@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function HomeScreen() {
+export default function ChatScreen() {
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 24 }}>Bem-vindo à Home!</Text>

@@ -24,12 +24,25 @@ export default function LoginScreen({ navigation }) {
           placeholder="Senha"
           secureTextEntry={true}
         />
-        <Button
-          title="Entrar"
-          onPress={() => {
-            navigation.navigate('CEOHome');
-          }}
-        />
+
+        <View style={{ width: 300, marginTop: 20 }}>
+          <Button
+            title="Entrar"
+            onPress={() => {
+              navigation.navigate('Chat');
+            }}
+          />
+        </View>
+
+        <View style={{ width: 300, marginTop: 20 }}>
+          <Button
+            title="Registrar"
+            onPress={() => {
+              navigation.navigate('Register');
+            }}
+          />
+        </View>
+
       </View>
     </View>
   );
@@ -44,6 +57,8 @@ const styles = StyleSheet.create({
   },
   textLoginBox: {
     flex: 1,
+    widgth: 300,
+    height: 900,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'top',

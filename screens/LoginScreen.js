@@ -27,7 +27,7 @@ export default function LoginScreen({ navigation }) {
         <Button
           title="Entrar"
           onPress={() => {
-            navigation.navigate('Home');
+            navigation.navigate('CEOHome');
           }}
         />
       </View>

@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }) {
           secureTextEntry
         />
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Chat')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Main')}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
 

@@ -1,38 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions } from 'react-native';
+import { View, TextInput, Image, StyleSheet } from 'react-native';
 
-export default function ChatScreen({ navigation }) {
+export default function ChatScreen() {
   const [message, setMessage] = useState('');
 
   return (
     <View style={styles.container}>
-      {/* Abas estilo navegador */}
-      <View style={styles.tabsWrapper}>
-        <View style={styles.tabsContainer}>
-          {/* Aba "Chat" */}
-          <View style={[styles.tab, styles.inactiveTab]}>
-            <Text style={styles.tabText}>Chat</Text>
-          </View>
-
-          {/* Aba "Recursos" */}
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => navigation.navigate('FunctionScreen')}
-          >
-            <Text style={styles.tabText}>Recursos</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
       {/* Avatar centralizado */}
       <View style={styles.avatarContainer}>
         <Image
-          source={require('../assets/avatar.png')} // Atualize para o caminho correto no seu projeto
+          source={require('../assets/avatar.png')}
           style={styles.avatar}
         />
       </View>
 
-      {/* Input logo abaixo do avatar */}
+      {/* Input fixo na parte de baixo */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -46,44 +28,15 @@ export default function ChatScreen({ navigation }) {
   );
 }
 
-const { width } = Dimensions.get('window');
-const tabWidth = width * 0.4; // 40% da largura da tela para cada aba
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9fafb',
   },
-  tabsWrapper: {
-    alignItems: 'center',
-    paddingTop: 50,
-  },
-  tabsContainer: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  tab: {
-    width: tabWidth,
-    backgroundColor: '#e0e7ff',
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-  },
-  inactiveTab: {
-    backgroundColor: '#c7d2fe',
-  },
-  tabText: {
-    color: '#1e3a8a',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
   avatarContainer: {
     alignItems: 'center',
     marginTop: 60,
+    marginBottom: 20,
   },
   avatar: {
     width: 140,
@@ -91,8 +44,13 @@ const styles = StyleSheet.create({
     borderRadius: 70,
   },
   inputContainer: {
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    bottom: 40, // <-- aumente este valor para subir o input
+    width: '100%',
     alignItems: 'center',
-    marginTop: 20,
+    paddingBottom: 20,
+    backgroundColor: 'transparent',
   },
   input: {
     width: '90%',

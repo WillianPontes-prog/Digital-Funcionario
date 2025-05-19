@@ -22,7 +22,7 @@ export default function SignupScreen({ navigation }) {
 
     // Aqui você pode adicionar lógica para enviar os dados para backend, etc.
 
-    navigation.navigate('Chat');
+    navigation.navigate('Main');
   };
 
   return (

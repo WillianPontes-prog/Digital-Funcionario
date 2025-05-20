@@ -6,4 +6,5 @@ export const COLORS = {
   white: '#fff',
   whiteSoft: '#e5e7eb',                        // cinza claro para texto em input
   subtitle: '#cbd5e1',                         // cinza-azulado claro
+  buttonBgSoft: '#3b82f6',                  // azul claro para botões secundários
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { COLORS } from './colors';
 
 export default function LoginScreen({ navigation }) {
   const [loginUser, setLoginUser] = useState('');
@@ -8,7 +9,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <LinearGradient
-      colors={['#3b82f6', '#60a5fa', '#93c5fd']}
+      colors={COLORS.gradient}
       style={styles.container}
     >
       <View style={styles.box}>
@@ -20,7 +21,7 @@ export default function LoginScreen({ navigation }) {
           onChangeText={setLoginUser}
           value={loginUser}
           placeholder="Login"
-          placeholderTextColor="#fff"
+          placeholderTextColor={COLORS.white}
           keyboardType="email-address"
         />
 
@@ -29,7 +30,7 @@ export default function LoginScreen({ navigation }) {
           onChangeText={setPasswordUser}
           value={passwordUser}
           placeholder="Senha"
-          placeholderTextColor="#fff"
+          placeholderTextColor={COLORS.white}
           secureTextEntry
         />
 
@@ -54,20 +55,19 @@ const styles = StyleSheet.create({
   box: {
     width: 320,
     padding: 24,
-    backgroundColor: 'rgba(81, 61, 150, 0.1)',
+    backgroundColor: COLORS.boxBg,
     borderRadius: 20,
-    backdropFilter: 'blur(10px)',
     alignItems: 'center',
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#fff',
+    color: COLORS.white,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#f0f0f0',
+    color: COLORS.subtitle,
     marginBottom: 16,
   },
   input: {
@@ -76,11 +76,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 15,
     marginVertical: 10,
-    backgroundColor: 'rgba(178, 173, 252, 0.25)',
-    color: '#f8f8f8',
+    backgroundColor: COLORS.inputBg,
+    color: COLORS.whiteSoft,
   },
   button: {
-    backgroundColor: 'rgba(17, 0, 255, 0.79)',
+    backgroundColor: COLORS.buttonBg,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonSecondary: {
-    backgroundColor: 'rgba(17, 0, 255, 0.79)',
+    backgroundColor: COLORS.buttonBg,
   },
   buttonText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: 'bold',
   },

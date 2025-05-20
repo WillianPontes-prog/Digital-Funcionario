@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { COLORS } from './colors';
 
 export default function SignupScreen({ navigation }) {
   const [firstName, setFirstName] = useState('');
@@ -26,26 +28,28 @@ export default function SignupScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.textLoginBox}>
-        <Text style={{ fontSize: 28, fontWeight: 'bold' }}>Cadastro</Text>
-        <Text style={{ fontSize: 18 }}>Crie sua conta para continuar.</Text>
-
+    <LinearGradient colors={COLORS.gradient} style={styles.container}>
+      <View style={styles.box}>
+        <Text style={styles.title}>Cadastro</Text>
+        <Text style={styles.subtitle}>Crie sua conta para continuar.</Text>
         <TextInput
           style={[styles.input, { marginTop: 40 }]}
           placeholder="Nome"
+          placeholderTextColor={COLORS.white}
           value={firstName}
           onChangeText={setFirstName}
         />
         <TextInput
           style={styles.input}
           placeholder="Sobrenome"
+          placeholderTextColor={COLORS.white}
           value={lastName}
           onChangeText={setLastName}
         />
         <TextInput
           style={styles.input}
           placeholder="Email"
+          placeholderTextColor={COLORS.white}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -54,12 +58,14 @@ export default function SignupScreen({ navigation }) {
         <TextInput
           style={styles.input}
           placeholder="Nome da empresa"
+          placeholderTextColor={COLORS.white}
           value={companyName}
           onChangeText={setCompanyName}
         />
         <TextInput
           style={styles.input}
           placeholder="Senha"
+          placeholderTextColor={COLORS.white}
           value={password}
           onChangeText={setPassword}
           secureTextEntry={true}
@@ -67,36 +73,65 @@ export default function SignupScreen({ navigation }) {
         <TextInput
           style={styles.input}
           placeholder="Confirmar senha"
+          placeholderTextColor={COLORS.white}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry={true}
         />
 
-        <Button title="Cadastrar" onPress={handleSignup} />
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Cadastrar</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
-  },
-  textLoginBox: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginTop: 150,
+  },
+  box: {
+    width: 320,
+    padding: 24,
+    backgroundColor: COLORS.boxBg,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: COLORS.subtitle,
+    marginBottom: 16,
   },
   input: {
-    height: 40,
-    width: 300,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+    width: '100%',
+    height: 45,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginVertical: 10,
+    backgroundColor: COLORS.inputBg,
+    color: COLORS.whiteSoft,
+  },
+  button: {
+    backgroundColor: COLORS.buttonBg,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

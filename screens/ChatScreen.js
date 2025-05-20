@@ -1,13 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { View, TextInput, Image, StyleSheet, FlatList, Text, Keyboard, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Se estiver usando Expo
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from './colors';
 
 export default function ChatScreen() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
 
-  // Função para enviar mensagem
   const sendMessage = () => {
     if (message.trim() !== '') {
       setMessages(prev => {
@@ -24,15 +24,12 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Avatar centralizado, área reduzida */}
       <View style={styles.avatarContainer}>
         <Image
           source={require('../assets/avatar.png')}
           style={styles.avatar}
         />
       </View>
-
-      {/* Lista de mensagens, área aumentada */}
       <View style={styles.messagesWrapper}>
         <FlatList
           ref={flatListRef}
@@ -48,21 +45,19 @@ export default function ChatScreen() {
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
         />
       </View>
-
-      {/* Input fixo na parte de baixo */}
       <View style={styles.inputContainer}>
         <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
             placeholder="Digite sua mensagem..."
-            placeholderTextColor="#888"
+            placeholderTextColor={COLORS.whiteSoft}
             value={message}
             onChangeText={setMessage}
             onSubmitEditing={sendMessage}
             returnKeyType="send"
           />
           <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-            <Ionicons name="send" size={24} color="#fff" />
+            <Ionicons name="send" size={24} color={COLORS.white} />
           </TouchableOpacity>
         </View>
       </View>
@@ -73,7 +68,7 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: COLORS.gradient[2], // fundo claro do degradê
   },
   avatarContainer: {
     alignItems: 'center',
@@ -96,12 +91,12 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     paddingHorizontal: 20,
-    backgroundColor: '#e0f2fe',
+    backgroundColor: COLORS.boxBg,
     borderRadius: 16,
     paddingTop: 10,
   },
   messageBubble: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: COLORS.buttonBg,
     alignSelf: 'flex-end',
     borderRadius: 16,
     padding: 10,
@@ -109,10 +104,10 @@ const styles = StyleSheet.create({
     maxWidth: '80%',
   },
   userBubble: {
-    // Se quiser customizar mais, adicione aqui
+    // Personalize se quiser
   },
   messageText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 16,
   },
   inputContainer: {
@@ -125,25 +120,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '90%',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.inputBg,
     borderRadius: 24,
-    borderColor: '#ccc',
+    borderColor: COLORS.white,
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
   },
   input: {
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 12,
     fontSize: 16,
+    color: COLORS.white,
     backgroundColor: 'transparent',
   },
   sendButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: COLORS.buttonBg,
     borderTopRightRadius: 24,
     borderBottomRightRadius: 24,
     paddingHorizontal: 16,

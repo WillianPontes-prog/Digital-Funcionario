@@ -1,33 +1,51 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
-
-const SECTIONS = [
-  {
-    title: 'Cadastrar Funcionário (CEO)',
-    content: (<Text> oieeeee
-      </Text>)
-  },
-  {
-    title: 'Configurar Detalhes da Empresa (CEO)',
-    content: 'Conteúdo do segundo item.'
-  },
-  {
-    title: 'Upload de Relatórios (CEO)',
-    content: 'Conteúdo do segundo item.'
-  },
-  {
-    title: 'Gerar Relatórios (CEO)',
-    content: 'Conteúdo do segundo item.'
-  },
-  {
-    title: 'Cadastrar Redes Sociais (Marketing)',
-    content: 'Conteúdo do segundo item.'
-  },
-];
 
 export default function FunctionScreen() {
   const [activeSections, setActiveSections] = useState([]);
+  const [nomeCadastro, setName] = useState('');
+
+  const SECTIONS = [
+    {
+      title: 'Cadastrar Funcionário (CEO)',
+      content: (
+        <View>
+          <TextInput
+            style={{ backgroundColor: '#e0e7ff', padding: 12, borderRadius: 6, width: '60%', marginBottom: 10 }}
+            onChangeText={setName}
+            value={nomeCadastro}
+            placeholder="Nome"
+            placeholderTextColor="#374151"
+            keyboardType='default'
+          />
+          
+          <TouchableOpacity
+            style={{ backgroundColor: '#2563eb', padding: 12, borderRadius: 6, alignItems: 'center', width: '60%' }}
+            onPress={() => alert('Cadastrar Funcionário')}
+          >
+            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cadastrar Funcionário</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    },
+    {
+      title: 'Configurar Detalhes da Empresa (CEO)',
+      content: (<Text>Conteúdo do segundo item.</Text>)
+    },
+    {
+      title: 'Upload de Relatórios (CEO)',
+      content: <Text>Conteúdo do segundo item.</Text>
+    },
+    {
+      title: 'Gerar Relatórios (CEO)',
+      content: <Text>Conteúdo do segundo item.</Text>
+    },
+    {
+      title: 'Cadastrar Redes Sociais (Marketing)',
+      content: <Text>Conteúdo do segundo item.</Text>
+    },
+  ];
 
   const renderHeader = (section, _, isActive) => (
     <View style={[styles.box, isActive && { backgroundColor: '#c7d2fe' }]}> 
@@ -92,6 +110,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    width: '80%',
+    width: '60%',
   },
 });

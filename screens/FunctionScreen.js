@@ -197,7 +197,7 @@ export default function FunctionScreen() {
             value={relatorio}
             placeholder="Descreva Brevemente o Conteúdo do Relatório"
             placeholderTextColor="#64748b"
-            secureTextEntry
+            keyboardType='default'
           />
         <TouchableOpacity
           style={styles.button}

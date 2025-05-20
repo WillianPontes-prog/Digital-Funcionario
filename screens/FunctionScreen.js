@@ -140,23 +140,23 @@ export default function FunctionScreen() {
             keyboardType="default"
           />
         <Picker
-        style={[styles.input, {width: '50%'}]}
-        selectedValue={valorSelecionado}
-        onValueChange={(itemValue) => setValorSelecionado(itemValue)}
->
-      <Picker.Item label="Selecione Sua Empresa" value="opcao1" />
-      <Picker.Item label="Restaurante" value="opcao2" />
-      <Picker.Item label="Consultório" value="opcao3" />
-      <Picker.Item label="Escritório" value="opcao4" />
-      <Picker.Item label="Pet Shop" value="opcao5" />
-      </Picker>,
-      <TouchableOpacity
-            style={styles.button}
-            onPress={() => alert('Empresa cadastrada!')}
-          >
-            <Text style={styles.buttonText}>Cadastrar Empresa</Text>
-          </TouchableOpacity>
-        </View>
+          style={[styles.input, {width: '50%'}]}
+          selectedValue={valorSelecionado}
+          onValueChange={(itemValue) => setValorSelecionado(itemValue)}
+        >
+          <Picker.Item label="Selecione Sua Empresa" value="opcao1" />
+          <Picker.Item label="Restaurante" value="opcao2" />
+          <Picker.Item label="Consultório" value="opcao3" />
+          <Picker.Item label="Escritório" value="opcao4" />
+          <Picker.Item label="Pet Shop" value="opcao5" />
+        </Picker>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => alert('Empresa cadastrada!')}
+        >
+          <Text style={styles.buttonText}>Cadastrar Empresa</Text>
+        </TouchableOpacity>
+      </View>
     },
     {
       title: 'Upload de Relatórios (CEO)',

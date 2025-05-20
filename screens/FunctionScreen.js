@@ -4,12 +4,24 @@ import Accordion from 'react-native-collapsible/Accordion';
 
 const SECTIONS = [
   {
-    title: 'Primeiro item',
+    title: 'Cadastrar Funcionário (CEO)',
     content: (<Text> oieeeee
       </Text>)
   },
   {
-    title: 'Segundo item',
+    title: 'Configurar Detalhes da Empresa (CEO)',
+    content: 'Conteúdo do segundo item.'
+  },
+  {
+    title: 'Upload de Relatórios (CEO)',
+    content: 'Conteúdo do segundo item.'
+  },
+  {
+    title: 'Gerar Relatórios (CEO)',
+    content: 'Conteúdo do segundo item.'
+  },
+  {
+    title: 'Cadastrar Redes Sociais (Marketing)',
     content: 'Conteúdo do segundo item.'
   },
 ];

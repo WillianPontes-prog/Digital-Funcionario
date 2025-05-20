@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, TextInput, Image, StyleSheet, FlatList, Text, Keyboard, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
 
 export default function ChatScreen() {
@@ -23,52 +24,57 @@ export default function ChatScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.avatarContainer}>
-        <Image
-          source={require('../assets/avatar.png')}
-          style={styles.avatar}
-        />
-      </View>
-      <View style={styles.messagesWrapper}>
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <View style={[styles.messageBubble, styles.userBubble]}>
-              <Text style={styles.messageText}>{item.text}</Text>
-            </View>
-          )}
-          style={styles.messagesList}
-          contentContainerStyle={{ paddingBottom: 10 }}
-          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <View style={styles.inputRow}>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua mensagem..."
-            placeholderTextColor={COLORS.whiteSoft}
-            value={message}
-            onChangeText={setMessage}
-            onSubmitEditing={sendMessage}
-            returnKeyType="send"
+    <LinearGradient colors={COLORS.gradient} style={styles.background}>
+      <View style={styles.container}>
+        <View style={styles.avatarContainer}>
+          <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
           />
-          <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-            <Ionicons name="send" size={24} color={COLORS.white} />
-          </TouchableOpacity>
+        </View>
+        <View style={styles.messagesWrapper}>
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <View style={[styles.messageBubble, styles.userBubble]}>
+                <Text style={styles.messageText}>{item.text}</Text>
+              </View>
+            )}
+            style={styles.messagesList}
+            contentContainerStyle={{ paddingBottom: 10 }}
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <View style={styles.inputRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite sua mensagem..."
+              placeholderTextColor={COLORS.whiteSoft}
+              value={message}
+              onChangeText={setMessage}
+              onSubmitEditing={sendMessage}
+              returnKeyType="send"
+            />
+            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+              <Ionicons name="send" size={24} color={COLORS.white} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: COLORS.gradient[2], // fundo claro do degradê
+    backgroundColor: 'transparent', // para mostrar o LinearGradient atrás
   },
   avatarContainer: {
     alignItems: 'center',
@@ -99,13 +105,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.buttonBg,
     alignSelf: 'flex-end',
     borderRadius: 16,
-    padding: 10,
+    padding: 12,
     marginVertical: 4,
     maxWidth: '80%',
+    shadowColor: COLORS.buttonBg,
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
-  userBubble: {
-    // Personalize se quiser
-  },
+  userBubble: {},
   messageText: {
     color: COLORS.white,
     fontSize: 16,

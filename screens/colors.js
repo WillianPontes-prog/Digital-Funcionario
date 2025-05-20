@@ -1,9 +1,9 @@
 export const COLORS = {
-  gradient: ['#3b82f6', '#60a5fa', '#93c5fd'],
-  boxBg: 'rgba(81, 61, 150, 0.1)',
-  inputBg: 'rgba(178, 173, 252, 0.25)',
-  buttonBg: 'rgba(17, 0, 255, 0.79)',
+  gradient: ['#2563eb', '#1e40af', '#0a192f'], // azul escuro para mais contraste
+  boxBg: 'rgba(30, 58, 138, 0.15)',            // azul escuro translúcido
+  inputBg: 'rgba(30, 41, 59, 0.85)',           // azul bem escuro translúcido
+  buttonBg: '#2563eb',                         // azul forte e sólido
   white: '#fff',
-  whiteSoft: '#f8f8f8',
-  subtitle: '#f0f0f0',
+  whiteSoft: '#e5e7eb',                        // cinza claro para texto em input
+  subtitle: '#cbd5e1',                         // cinza-azulado claro
 };

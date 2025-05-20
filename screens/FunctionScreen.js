@@ -56,22 +56,37 @@ function CalendarSection() {
         onDayPress={handleDayPress}
         markedDates={finalMarkedDates}
         theme={{
-          backgroundColor: COLORS.boxBg,
-          calendarBackground: COLORS.boxBg,
-          todayTextColor: '#2563eb',
-          selectedDayBackgroundColor: '#2563eb',
-          selectedDayTextColor: '#fff',
-          dayTextColor: '#1e293b',
-          textDisabledColor: '#94a3b8',
-          monthTextColor: '#1e3a8a',
-          arrowColor: '#2563eb',
-          textSectionTitleColor: '#2563eb',
+          backgroundColor: COLORS.white, // fundo branco
+          calendarBackground: COLORS.white, // fundo branco
+          todayTextColor: COLORS.buttonBg,
+          selectedDayBackgroundColor: COLORS.buttonBg,
+          selectedDayTextColor: COLORS.white,
+          dayTextColor: '#222', // preto para máximo contraste
+          textDisabledColor: COLORS.subtitle,
+          monthTextColor: COLORS.buttonBg,
+          arrowColor: COLORS.buttonBg,
+          textSectionTitleColor: COLORS.buttonBg,
+          textDayFontWeight: 'bold',
+          textMonthFontWeight: 'bold',
+          textDayFontSize: 16,
+          textMonthFontSize: 18,
         }}
       />
       {selectedDate !== '' && (
         <View style={{ marginTop: 10 }}>
-          <Text style={{ fontWeight: 'bold', color: '#1e3a8a', fontSize: 16 }}>{selectedDate}</Text>
-          <Text style={{ marginTop: 6, color: '#1e293b', fontSize: 15 }}>{details}</Text>
+          <Text style={{ fontWeight: 'bold', color: COLORS.buttonBg, fontSize: 16 }}>
+            {selectedDate}
+          </Text>
+          <Text
+            style={{
+              marginTop: 6,
+              color: COLORS.white, // agora o texto do dia selecionado fica branco
+              fontSize: 15,
+              fontWeight: 'bold',
+            }}
+          >
+            {details}
+          </Text>
         </View>
       )}
     </View>
@@ -211,7 +226,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   box: {
-    backgroundColor: COLORS.boxBg,
+    backgroundColor: COLORS.buttonBgSoft,
     borderRadius: 10,
     padding: 14,
     marginTop: 20,
@@ -243,7 +258,7 @@ const styles = StyleSheet.create({
     color: COLORS.gradient[2],
     fontSize: 15,
     borderWidth: 1,
-    borderColor: COLORS.boxBg,
+    borderColor: COLORS.buttonBg,
   },
   button: {
     backgroundColor: COLORS.buttonBg,

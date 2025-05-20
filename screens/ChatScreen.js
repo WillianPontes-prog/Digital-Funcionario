@@ -4,6 +4,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
 
+const BOT_RESPONSES = [
+  "Pruuuu",
+  "Grrrrk",
+  "Prururururu",
+  "Passa o PIX"
+];
+
 export default function ChatScreen() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -11,8 +18,9 @@ export default function ChatScreen() {
 
   const sendMessage = () => {
     if (message.trim() !== '') {
+      const userMsg = { id: Date.now().toString(), text: message, from: 'user' };
       setMessages(prev => {
-        const newMessages = [...prev, { id: Date.now().toString(), text: message }];
+        const newMessages = [...prev, userMsg];
         setTimeout(() => {
           flatListRef.current?.scrollToEnd({ animated: true });
         }, 100);
@@ -20,6 +28,19 @@ export default function ChatScreen() {
       });
       setMessage('');
       Keyboard.dismiss();
+
+      // Bot response
+      setTimeout(() => {
+        const botMsg = {
+          id: (Date.now() + 1).toString(),
+          text: BOT_RESPONSES[Math.floor(Math.random() * BOT_RESPONSES.length)],
+          from: 'bot'
+        };
+        setMessages(prev => [...prev, botMsg]);
+        setTimeout(() => {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+      }, 600);
     }
   };
 
@@ -38,7 +59,12 @@ export default function ChatScreen() {
             data={messages}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
-              <View style={[styles.messageBubble, styles.userBubble]}>
+              <View
+                style={[
+                  styles.messageBubble,
+                  item.from === 'user' ? styles.userBubble : styles.botBubble
+                ]}
+              >
                 <Text style={styles.messageText}>{item.text}</Text>
               </View>
             )}
@@ -102,8 +128,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   messageBubble: {
-    backgroundColor: COLORS.buttonBg,
-    alignSelf: 'flex-end',
     borderRadius: 16,
     padding: 12,
     marginVertical: 4,
@@ -114,7 +138,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  userBubble: {},
+  userBubble: {
+    backgroundColor: COLORS.buttonBg,
+    alignSelf: 'flex-end',
+  },
+  botBubble: {
+    backgroundColor: COLORS.inputBg,
+    alignSelf: 'flex-start',
+  },
   messageText: {
     color: COLORS.white,
     fontSize: 16,

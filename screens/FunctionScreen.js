@@ -5,6 +5,8 @@ import Accordion from 'react-native-collapsible/Accordion';
 export default function FunctionScreen() {
   const [activeSections, setActiveSections] = useState([]);
   const [nomeCadastro, setName] = useState('');
+  const [passCadastro, setPassword] = useState('');
+  const [emailCadastro, setEmail] = useState('');
 
   const SECTIONS = [
     {
@@ -19,7 +21,22 @@ export default function FunctionScreen() {
             placeholderTextColor="#374151"
             keyboardType='default'
           />
-          
+          <TextInput
+            style={{ backgroundColor: '#e0e7ff', padding: 12, borderRadius: 6, width: '60%', marginBottom: 10 }}
+            onChangeText={setPassword}
+            value={passCadastro}
+            placeholder="Senha"
+            placeholderTextColor="#374151"
+            keyboardType='default'
+          />
+          <TextInput
+            style={{ backgroundColor: '#e0e7ff', padding: 12, borderRadius: 6, width: '60%', marginBottom: 10 }}
+            onChangeText={setEmail}
+            value={emailCadastro}
+            placeholder="Email"
+            placeholderTextColor="#374151"
+            keyboardType='default'
+          />
           <TouchableOpacity
             style={{ backgroundColor: '#2563eb', padding: 12, borderRadius: 6, alignItems: 'center', width: '60%' }}
             onPress={() => alert('Cadastrar Funcionário')}

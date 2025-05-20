@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 20,
     backgroundColor: 'transparent',
+    marginBottom: 30,
   },
   inputRow: {
     flexDirection: 'row',

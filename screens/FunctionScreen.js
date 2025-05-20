@@ -84,6 +84,9 @@ export default function FunctionScreen() {
   const [senhaCadastro, setSenhaCadastro] = useState('');
   const [emailCadastro, setEmailCadastro] = useState('');
 
+  const [valorSelecionado, setValorSelecionado] = useState('opcao1');
+  const [nomeEmpresa, setNomeEmpresa] = useState('');
+
   const SECTIONS = [
     {
       title: 'Cadastrar Funcionário (CEO)',
@@ -127,13 +130,33 @@ export default function FunctionScreen() {
     },
     {
       title: 'Configurar Detalhes da Empresa (CEO)',
-      content: <Picker
+      content: <View>
+        <TextInput
+            style={styles.input}
+            onChangeText={setNomeEmpresa}
+            value={nomeEmpresa}
+            placeholder="Nome da Empresa"
+            placeholderTextColor="#64748b"
+            keyboardType="default"
+          />
+        <Picker
+        style={[styles.input, {width: '50%'}]}
         selectedValue={valorSelecionado}
         onValueChange={(itemValue) => setValorSelecionado(itemValue)}
 >
-      <Picker.Item label="Opção 1" value="opcao1" />
-      <Picker.Item label="Opção 2" value="opcao2" />
+      <Picker.Item label="Selecione Sua Empresa" value="opcao1" />
+      <Picker.Item label="Restaurante" value="opcao2" />
+      <Picker.Item label="Consultório" value="opcao3" />
+      <Picker.Item label="Escritório" value="opcao4" />
+      <Picker.Item label="Pet Shop" value="opcao5" />
       </Picker>,
+      <TouchableOpacity
+            style={styles.button}
+            onPress={() => alert('Empresa cadastrada!')}
+          >
+            <Text style={styles.buttonText}>Cadastrar Empresa</Text>
+          </TouchableOpacity>
+        </View>
     },
     {
       title: 'Upload de Relatórios (CEO)',

@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   box: {
-    backgroundColor: 'rgba(255,255,255,0.85)',
+    backgroundColor: COLORS.boxBg,
     borderRadius: 10,
     padding: 14,
     marginTop: 20,
@@ -192,43 +192,43 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   activeBox: {
-    backgroundColor: 'rgba(59,130,246,0.12)',
+    backgroundColor: COLORS.inputBg, // caixa aberta fica mais escura e com mais contraste
   },
   boxTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1e3a8a',
+    color: COLORS.white,
   },
   boxContent: {
     marginTop: 10,
     padding: 20,
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    backgroundColor: COLORS.inputBg, // fundo da área aberta também escuro para contraste
     borderRadius: 10,
   },
   input: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: COLORS.whiteSoft,
     padding: 12,
     borderRadius: 8,
     marginBottom: 10,
-    color: '#1e293b',
+    color: COLORS.gradient[2],
     fontSize: 15,
     borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderColor: COLORS.boxBg,
   },
   button: {
-    backgroundColor: '#2563eb',
+    backgroundColor: COLORS.buttonBg,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: COLORS.white,
     fontWeight: 'bold',
     fontSize: 16,
   },
   sectionText: {
-    color: '#1e293b',
+    color: COLORS.whiteSoft,
     fontSize: 15,
   },
 });

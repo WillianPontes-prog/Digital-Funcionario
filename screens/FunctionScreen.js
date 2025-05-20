@@ -5,6 +5,7 @@ import { COLORS } from './colors';
 import Accordion from 'react-native-collapsible/Accordion';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Picker } from '@react-native-picker/picker';
+import * as DocumentPicker from 'expo-document-picker';
 
 // Configuração do calendário em português
 LocaleConfig.locales['pt-br'] = {
@@ -162,7 +163,30 @@ export default function FunctionScreen() {
     },
     {
       title: 'Upload de Relatórios (CEO)',
-      content: <Text style={styles.sectionText}>Conteúdo do terceiro item.</Text>,
+      content: (
+        <View style={styles.uploadContainer}>
+          <View style={styles.dropZone}>
+            <Text style={styles.dropText}>Arraste seus documentos aqui</Text>
+          </View>
+          <TouchableOpacity style={styles.uploadButton}onPress={async () => {
+              try {
+                const result = await DocumentPicker.getDocumentAsync({});
+
+                if (result.type === 'success') {
+                  alert(`Arquivo selecionado: ${result.name}`);
+                  // Aqui você pode enviar para seu backend ou armazenar localmente
+                } else {
+                  alert('Nenhum arquivo selecionado.');
+                }
+              } catch (error) {
+                console.error('Erro ao selecionar arquivo:', error);
+                alert('Erro ao selecionar arquivo.');
+              }
+            }}>
+            <Text style={styles.uploadButtonText}>Upload</Text>
+          </TouchableOpacity>
+        </View>
+      ),
     },
     {
       title: 'Gerar Relatórios (CEO)',
@@ -278,4 +302,42 @@ const styles = StyleSheet.create({
     color: COLORS.whiteSoft,
     fontSize: 15,
   },
+  uploadContainer: {
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  dropZone: {
+    width: '100%',
+    height: 150,
+    borderWidth: 2,
+    borderColor: '#cbd5e1',
+    borderStyle: 'dashed',
+    borderRadius: 10,
+    backgroundColor: '#e2e8f0', // tom acinzentado
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+
+  dropText: {
+    fontSize: 16,
+    color: '#334155',
+    textAlign: 'center',
+  },
+
+  uploadButton: {
+    backgroundColor: '#2563eb',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+
+  uploadButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+
 });

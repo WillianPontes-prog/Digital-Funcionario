@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
 import Accordion from 'react-native-collapsible/Accordion';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Picker } from '@react-native-picker/picker';
 
 // Configuração do calendário em português
 LocaleConfig.locales['pt-br'] = {
@@ -126,7 +127,13 @@ export default function FunctionScreen() {
     },
     {
       title: 'Configurar Detalhes da Empresa (CEO)',
-      content: <Text style={styles.sectionText}>Conteúdo do segundo item.</Text>,
+      content: <Picker
+        selectedValue={valorSelecionado}
+        onValueChange={(itemValue) => setValorSelecionado(itemValue)}
+>
+      <Picker.Item label="Opção 1" value="opcao1" />
+      <Picker.Item label="Opção 2" value="opcao2" />
+      </Picker>,
     },
     {
       title: 'Upload de Relatórios (CEO)',

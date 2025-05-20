@@ -87,6 +87,8 @@ export default function FunctionScreen() {
   const [valorSelecionado, setValorSelecionado] = useState('opcao1');
   const [nomeEmpresa, setNomeEmpresa] = useState('');
 
+  const [relatorio, setRelatorio] = useState('');
+
   const SECTIONS = [
     {
       title: 'Cadastrar Funcionário (CEO)',
@@ -164,7 +166,22 @@ export default function FunctionScreen() {
     },
     {
       title: 'Gerar Relatórios (CEO)',
-      content: <Text style={styles.sectionText}>Conteúdo do quarto item.</Text>,
+      content: <View>
+        <TextInput
+            style={styles.input}
+            onChangeText={setRelatorio}
+            value={relatorio}
+            placeholder="Descreva Brevemente o Conteúdo do Relatório"
+            placeholderTextColor="#64748b"
+            secureTextEntry
+          />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => alert('Relatório gerado!')}
+        >
+          <Text style={styles.buttonText}>Gerar Relatório</Text>
+        </TouchableOpacity>
+      </View>
     },
     {
       title: 'Cadastrar Redes Sociais (Marketing)',

@@ -105,6 +105,12 @@ export default function FunctionScreen() {
 
   const [relatorio, setRelatorio] = useState('');
 
+  const [nomeInstagram, setNomeInstagram] = useState('');
+  const [senhaInstagram, setSenhaInstagram] = useState('');
+  const [numeroWhatsapp, setNumeroWhatsapp] = useState('');
+
+  const [activeSubsections, setActiveSubsections] = useState([]);
+
   const SECTIONS = [
     {
       title: 'Cadastrar Funcionário (CEO)',
@@ -224,8 +230,80 @@ export default function FunctionScreen() {
     },
     {
       title: 'Cadastrar Redes Sociais (Marketing)',
-      content: <Text style={styles.sectionText}>Conteúdo do quinto item.</Text>,
-    },
+      content: (
+        <ScrollView
+          style={{ maxHeight: 300 }} // ajuste conforme necessário
+          nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={true}
+        >
+          <Accordion
+            sections={[
+              {
+                title: 'Instagram',
+                content: (
+                  <View>
+                    <TextInput
+                      style={styles.input}
+                      onChangeText={setNomeInstagram}
+                      value={nomeInstagram}
+                      placeholder="Nome do Instagram"
+                      placeholderTextColor="#374151"
+                    />
+                    <TextInput
+                      style={styles.input}
+                      onChangeText={setSenhaInstagram}
+                      value={senhaInstagram}
+                      placeholder="Senha do Instagram"
+                      placeholderTextColor="#374151"
+                      secureTextEntry
+                    />
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => alert('Instagram cadastrado!')}
+                    >
+                      <Text style={styles.buttonText}>Cadastrar Instagram</Text>
+                    </TouchableOpacity>
+                  </View>
+                ),
+              },
+              {
+                title: 'WhatsApp',
+                content: (
+                  <View>
+                    <TextInput
+                      style={styles.input}
+                      onChangeText={setNumeroWhatsapp}
+                      value={numeroWhatsapp}
+                      placeholder="Numero do WhatsApp"
+                      placeholderTextColor="#374151"
+                    />
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => alert('WhatsApp cadastrado!')}
+                    >
+                      <Text style={styles.buttonText}>Cadastrar WhatsApp</Text>
+                    </TouchableOpacity>
+                  </View>
+                ),
+              },
+            ]}
+            activeSections={activeSubsections}
+            renderHeader={(section, _, isActive) => (
+              <View style={[styles.subBox, isActive && styles.activeSubBox]}>
+                <Text style={styles.subBoxTitle}>{section.title}</Text>
+              </View>
+            )}
+            renderContent={(section) => (
+              <View style={styles.boxContent}>{section.content}</View>
+            )}
+            onChange={setActiveSubsections}
+            underlayColor="rgba(59,130,246,0.08)"
+          />
+        </ScrollView>
+      ),
+},
+
 
   ];
 
@@ -243,17 +321,21 @@ export default function FunctionScreen() {
 
   return (
     <LinearGradient colors={COLORS.gradient} style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
-        <View style={styles.content}>
-          <Accordion
-            sections={SECTIONS}
-            activeSections={activeSections}
-            renderHeader={renderHeader}
-            renderContent={renderContent}
-            onChange={setActiveSections}
-            underlayColor="rgba(59,130,246,0.08)"
-          />
-        </View>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 20, paddingBottom: 60 }}
+        nestedScrollEnabled={true}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+      >
+        <Accordion
+          sections={SECTIONS}
+          activeSections={activeSections}
+          renderHeader={renderHeader}
+          renderContent={renderContent}
+          onChange={setActiveSections}
+          underlayColor="rgba(59,130,246,0.08)"
+        />
       </ScrollView>
     </LinearGradient>
   );
@@ -354,5 +436,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+
+  subBox: {
+    backgroundColor: '#2563eb',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 10,
+  },
+  activeSubBox: {
+    backgroundColor: '#2563eb',
+  },
+  subBoxTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+
 
 });

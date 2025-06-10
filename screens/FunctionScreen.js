@@ -141,7 +141,25 @@ export default function FunctionScreen() {
           />
           <TouchableOpacity
             style={styles.button}
-            onPress={() => alert('Funcionário cadastrado!')}
+            onPress={async () => {
+              try {
+                const response = await fetch('http://192.168.56.1:8000/processar', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    name: 'João',
+                    value: 42
+                  })
+                });
+                const data = await response.json();
+                alert(data.resultado); // Mostra o resultado retornado pelo FastAPI
+              } catch (error) {
+                alert('Erro ao cadastrar funcionário');
+                console.error(error);
+              }
+            }}
           >
             <Text style={styles.buttonText}>Cadastrar Funcionário</Text>
           </TouchableOpacity>
@@ -451,6 +469,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-
-
 });

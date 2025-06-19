@@ -7,6 +7,8 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Picker } from '@react-native-picker/picker';
 import * as DocumentPicker from 'expo-document-picker';
 
+import { URL_DEFINE } from './defines';
+
 // Configuração do calendário em português
 LocaleConfig.locales['pt-br'] = {
   monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
@@ -111,6 +113,14 @@ export default function FunctionScreen() {
 
   const [activeSubsections, setActiveSubsections] = useState([]);
 
+  const empresaOptions = [
+    { label: "Selecione Sua Empresa", value: "opcao1" },
+    { label: "Restaurante", value: "opcao2" },
+    { label: "Consultório", value: "opcao3" },
+    { label: "Escritório", value: "opcao4" },
+    { label: "Pet Shop", value: "opcao5" },
+  ];
+
   const SECTIONS = [
     {
       title: 'Cadastrar Funcionário (CEO)',
@@ -143,18 +153,18 @@ export default function FunctionScreen() {
             style={styles.button}
             onPress={async () => {
               try {
-                const response = await fetch('http://192.168.56.1:8000/processar', {
+                const response = await fetch(URL_DEFINE+'/cadastrarFuncionario', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    name: 'João',
-                    value: 42
+                    name: nomeCadastro,
+                    password: senhaCadastro,
+                    email: emailCadastro,
                   })
                 });
                 const data = await response.json();
-                alert(data.resultado); // Mostra o resultado retornado pelo FastAPI
               } catch (error) {
                 alert('Erro ao cadastrar funcionário');
                 console.error(error);
@@ -186,15 +196,39 @@ export default function FunctionScreen() {
           selectedValue={valorSelecionado}
           onValueChange={(itemValue) => setValorSelecionado(itemValue)}
         >
-          <Picker.Item label="Selecione Sua Empresa" value="opcao1" />
-          <Picker.Item label="Restaurante" value="opcao2" />
-          <Picker.Item label="Consultório" value="opcao3" />
-          <Picker.Item label="Escritório" value="opcao4" />
-          <Picker.Item label="Pet Shop" value="opcao5" />
+          {empresaOptions.map(opt => (
+            <Picker.Item key={opt.value} label={opt.label} value={opt.value} />
+          ))}
         </Picker>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => alert('Empresa cadastrada!')}
+          onPress={async () => {
+              try {
+                const tipoLabel = empresaOptions.find(opt => opt.value === valorSelecionado)?.label || "";
+
+                // Validação: não envie se for a opção padrão ou se o nome estiver vazio
+                if (valorSelecionado === "opcao1" || !nomeEmpresa.trim()) {
+                  alert("Selecione um tipo de empresa válido e preencha o nome.");
+                  return;
+                }
+
+                const response = await fetch(URL_DEFINE+'/cadastrarEmpresa', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    name: nomeEmpresa,
+                    tipo: tipoLabel,
+                  })
+                });
+                const data = await response.json();
+                alert("Empresa cadastrada com sucesso!");
+              } catch (error) {
+                alert('Erro ao cadastrar empresa');
+                console.error(error);
+              }
+            }}
         >
           <Text style={styles.buttonText}>Cadastrar Empresa</Text>
         </TouchableOpacity>

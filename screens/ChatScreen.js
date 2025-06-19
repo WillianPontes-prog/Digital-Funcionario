@@ -3,6 +3,8 @@ import { View, TextInput, Image, StyleSheet, FlatList, Text, Keyboard, Touchable
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
+import { URL_DEFINE } from './defines';
+
 
 const BOT_RESPONSES = [
   "Pruuuu",
@@ -11,12 +13,27 @@ const BOT_RESPONSES = [
   "Passa o PIX"
 ];
 
+async function getFuncionario() {
+                    try {
+                      const response = await fetch(URL_DEFINE+'/listarFuncionarios', {
+                        method: 'GET',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        }
+                      });
+                      return response.json();
+                    } catch (error) {
+                      alert('Erro ao carregar funcionário');
+                      console.error(error);
+                    }
+                  }
+
 export default function ChatScreen() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const flatListRef = useRef(null);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (message.trim() !== '') {
       const userMsg = { id: Date.now().toString(), text: message, from: 'user' };
       setMessages(prev => {
@@ -30,10 +47,11 @@ export default function ChatScreen() {
       Keyboard.dismiss();
 
       // Bot response
-      setTimeout(() => {
+      setTimeout(async () => {
+        const response = await getFuncionario();
         const botMsg = {
           id: (Date.now() + 1).toString(),
-          text: BOT_RESPONSES[Math.floor(Math.random() * BOT_RESPONSES.length)],
+          text: response[0].name,
           from: 'bot'
         };
         setMessages(prev => [...prev, botMsg]);

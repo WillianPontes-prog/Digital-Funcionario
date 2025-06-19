@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
+
 
 app = FastAPI()
 
@@ -13,17 +15,49 @@ app.add_middleware(
 )
 
 # Modelo para receber dados do app
-class Item(BaseModel):
+class Funcionario(BaseModel):
     name: str
-    value: int
+    email: str
+    password: str
+
+class Empresa(BaseModel):
+    name: str
+    tipo: str
 
 @app.get("/")
 def read_root():
     return {"message": "API funcionando!"}
 
-@app.post("/processar")
-def processar_dados(item: Item):
-    # Aqui você pode chamar seu script Python, banco de dados, etc.
-    resultado = f"Recebi {item.name} com valor {item.value}"
-    print(f"o {item.name} roubou pão na casa do {item.value}")
-    return {"resultado": resultado}
+@app.post("/cadastrarFuncionario")
+def processar_dados(item: Funcionario):
+    employee = {
+        "name": item.name,
+        "email": item.email,
+        "password": item.password
+    }
+
+    df = pd.read_csv("employees.csv")
+    df = df._append(employee, ignore_index=True)
+    df.to_csv("employees.csv", index=False)
+
+    return employee
+
+@app.post("/cadastrarEmpresa")
+def processar_dados(item: Empresa):
+    empresa = {
+        "name": item.name,
+        "tipo": item.tipo}
+    
+    df = pd.DataFrame([empresa])
+    df.to_csv("empresa.csv", index=False)
+
+    return empresa
+
+@app.get("/listarFuncionarios")
+def listar_funcionarios():
+    try:
+        df = pd.read_csv("employees.csv")
+        funcionarios = df.to_dict(orient="records")
+        return funcionarios
+    except FileNotFoundError:
+        return {"message": "Nenhum funcionário cadastrado."}

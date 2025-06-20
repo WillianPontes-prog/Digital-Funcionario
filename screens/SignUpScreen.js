@@ -4,15 +4,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
 
 export default function SignupScreen({ navigation }) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [companyName, setCompanyName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSignup = () => {
-    if (!firstName || !lastName || !email || !companyName || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
     }
@@ -36,15 +34,8 @@ export default function SignupScreen({ navigation }) {
           style={[styles.input, { marginTop: 40 }]}
           placeholder="Nome"
           placeholderTextColor={COLORS.white}
-          value={firstName}
-          onChangeText={setFirstName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Sobrenome"
-          placeholderTextColor={COLORS.white}
-          value={lastName}
-          onChangeText={setLastName}
+          value={name}
+          onChangeText={setName}
         />
         <TextInput
           style={styles.input}
@@ -54,13 +45,6 @@ export default function SignupScreen({ navigation }) {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Nome da empresa"
-          placeholderTextColor={COLORS.white}
-          value={companyName}
-          onChangeText={setCompanyName}
         />
         <TextInput
           style={styles.input}

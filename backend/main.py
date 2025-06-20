@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
-
+import database
 
 app = FastAPI()
 
@@ -24,40 +24,37 @@ class Empresa(BaseModel):
     name: str
     tipo: str
 
+class Login(BaseModel):
+    email: str
+    password: str
+
 @app.get("/")
 def read_root():
     return {"message": "API funcionando!"}
 
 @app.post("/cadastrarFuncionario")
 def processar_dados(item: Funcionario):
-    employee = {
-        "name": item.name,
-        "email": item.email,
-        "password": item.password
-    }
-
-    df = pd.read_csv("employees.csv")
-    df = df._append(employee, ignore_index=True)
-    df.to_csv("employees.csv", index=False)
-
-    return employee
+    database.insert_employee(item.name, item.email, item.password)
+    database.add_user_marketing(item.email, item.password, item.name)
 
 @app.post("/cadastrarEmpresa")
-def processar_dados(item: Empresa):
-    empresa = {
-        "name": item.name,
-        "tipo": item.tipo}
+def processar_empresa(item: Empresa):
+    database.update_empresa(item.name, item.tipo)
     
-    df = pd.DataFrame([empresa])
-    df.to_csv("empresa.csv", index=False)
-
-    return empresa
 
 @app.get("/listarFuncionarios")
 def listar_funcionarios():
-    try:
-        df = pd.read_csv("employees.csv")
-        funcionarios = df.to_dict(orient="records")
+    funcionarios = database.get_all_employees()
+    if funcionarios:
         return funcionarios
-    except FileNotFoundError:
+    else:
         return {"message": "Nenhum funcionário cadastrado."}
+    
+@app.post("/loginESenha")
+def get_login(item: Login):
+    email = item.email
+    password = item.password
+    if database.check_login(email, password):
+        return {"status": 200}
+    else:
+        return {"status": 401}

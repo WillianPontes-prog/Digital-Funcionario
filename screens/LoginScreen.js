@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
-
+import { URL_DEFINE } from './defines';
+//() => navigation.navigate('Main')
 export default function LoginScreen({ navigation }) {
   const [loginUser, setLoginUser] = useState('');
   const [passwordUser, setPasswordUser] = useState('');
@@ -34,7 +35,35 @@ export default function LoginScreen({ navigation }) {
           secureTextEntry
         />
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Main')}>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={async () => {
+            let data;
+            try {
+              const response = await fetch(URL_DEFINE + '/loginESenha', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  email: loginUser,
+                  password: passwordUser,
+                })
+              });
+              data = await response.json();
+            } catch (error) {
+              alert('Erro ao logar');
+              console.error(error);
+              return; // Sai da função em caso de erro
+            }
+            if (data && data.status === 200) {
+              navigation.navigate('Main');
+            } else {
+              alert('Login ou senha incorretos');
+            }
+          }}
+        >
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
 

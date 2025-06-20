@@ -51,7 +51,7 @@ export default function ChatScreen() {
         const response = await getFuncionario();
         const botMsg = {
           id: (Date.now() + 1).toString(),
-          text: response[0].name,
+          text: response[1].name,
           from: 'bot'
         };
         setMessages(prev => [...prev, botMsg]);

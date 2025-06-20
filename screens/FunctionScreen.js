@@ -6,7 +6,6 @@ import Accordion from 'react-native-collapsible/Accordion';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Picker } from '@react-native-picker/picker';
 import * as DocumentPicker from 'expo-document-picker';
-
 import { URL_DEFINE } from './defines';
 
 // Configuração do calendário em português

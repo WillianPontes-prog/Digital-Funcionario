@@ -1,0 +1,25 @@
+como tem mais de uma pessoa rtabalhando é uma boa ideia docuementar como as coisas funcionam.
+
+eu to commitando com minhas alterações então voces vao ter que mexer na de voces futuramente.
+
+1- QUALQUER NOVA DEPENDENCIA COLOCAR EM requirements.txt
+2- para fazer funcionar qualquer coisa de salvamento é necessário:
+    criar o banco de dados chamado aps;
+    verificar as informações de porta, host e senha.
+    alterar o que for necessário em database.py para ser compativel com seu banco de dados.
+3- rode o backend com: uvicorn main:app --reload --host 0.0.0.0 --port 8081
+                                                                    ^isso aqui em cima vai mudar dependendo da porta do site
+4- rode o npm start. ele não vai funcionar nada relacionado ao banco de dados ainda. 
+   mas assim que rodar ele vai te dar as informações:
+
+    Metro waiting on exp://192.168.01.69:8081 
+    -> isso te deu as informações do seu ip e da sua porta que o site ta hospedado.
+        ->no comando de iniciar o backend mude a porta para ser igual a do site. Nesse caso 8081
+        ->em defines.js mude todos os ips para serem igual ao do site. Nesse caso 192.168.01.69
+
+5- salve tudo e reinicie o site e o backend.
+
+agora vai funcionar cabeça de bagre. bom dia
+
+
+FUTURAS ADIÇÕES. inevitavelmente teremos que fazer um .env para as nossas informações sensiveis

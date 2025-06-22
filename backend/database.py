@@ -2,7 +2,7 @@ import sqlalchemy
 import pandas as pd
 
 user = "root" 
-password = "254883" 
+password = "SUA_SENHA_AQUI" 
 host = "localhost" 
 port = 3306
 database = "aps"
@@ -58,6 +58,17 @@ with engine.begin() as connection:
             ('Jharrison@alunos.utfpr.edu.br', 'eusoubundao', 'CEO', 'John William')
     """))
         
+    # Cria a tabela de eventos do calendário, se não existir
+    connection.execute(sqlalchemy.text("""
+        CREATE TABLE IF NOT EXISTS calendar_events (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            date VARCHAR(10) NOT NULL,
+            title VARCHAR(255) NOT NULL,
+            description TEXT,
+            color VARCHAR(16) NOT NULL
+        )
+    """))
+
 def insert_employee(name: str, email: str, password: str):
     with engine.begin() as connection:  # Usa begin() para garantir o commit automático
         connection.execute(
@@ -145,3 +156,23 @@ def set_user_type(resultado):
     current_user = {"usertype": resultado}
     current_user = pd.DataFrame([current_user])
     current_user.to_csv('current_user.csv', index=False)
+
+def add_calendar_event(date: str, title: str, description: str, color: str):
+    with engine.begin() as connection:
+        connection.execute(
+            sqlalchemy.text(
+                "INSERT INTO calendar_events (date, title, description, color) VALUES (:date, :title, :description, :color)"
+            ),
+            {"date": date, "title": title, "description": description, "color": color}
+        )
+
+def get_calendar_events():
+    with engine.connect() as connection:
+        result = connection.execute(
+            sqlalchemy.text("SELECT date, title, description, color FROM calendar_events")
+        )
+        events = [
+            {"date": row.date, "title": row.title, "description": row.description, "color": row.color}
+            for row in result
+        ]
+        return events

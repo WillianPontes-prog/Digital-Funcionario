@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Modal, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -19,51 +19,92 @@ LocaleConfig.locales['pt-br'] = {
 LocaleConfig.defaultLocale = 'pt-br';
 
 function CalendarSection() {
+  const [events, setEvents] = useState({});
   const [selectedDate, setSelectedDate] = useState('');
-  const [details, setDetails] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [eventTitle, setEventTitle] = useState('');
+  const [eventDesc, setEventDesc] = useState('');
+  const [eventColor, setEventColor] = useState('#3b82f6');
 
-  const markedDates = {
-    '2025-05-21': { marked: true, dotColor: '#3b82f6' },
-    '2025-05-23': { marked: true, dotColor: '#2563eb' },
-  };
+  const colorOptions = [
+    { color: '#3b82f6', label: 'Campanha' },
+    { color: '#22c55e', label: 'Reunião' },
+    { color: '#f59e42', label: 'Entrega' },
+    { color: '#ef4444', label: 'Outro' },
+  ];
 
-  const postDetails = {
-    '2025-05-21': 'Post sobre a nova campanha da empresa.',
-    '2025-05-23': 'Publicar o vídeo institucional no Instagram e LinkedIn.',
-  };
+  function handleDayPress(day) {
+    setSelectedDate(day.dateString);
+    setEventTitle('');
+    setEventDesc('');
+    setEventColor('#3b82f6');
+    setModalVisible(true);
+  }
 
-  const handleDayPress = (day) => {
-    const dateStr = day?.dateString || '';
-    setSelectedDate(dateStr);
-    setDetails(postDetails[dateStr] || 'Nenhuma postagem planejada para este dia.');
-  };
-
-  const finalMarkedDates = {
-    ...markedDates,
-    ...(selectedDate
-      ? {
-          [selectedDate]: {
-            selected: true,
-            selectedColor: '#2563eb',
-            marked: !!markedDates[selectedDate],
-            dotColor: markedDates[selectedDate]?.dotColor || undefined,
+  async function saveEvent() {
+    if (!eventTitle.trim()) {
+      alert('Digite um título para o evento.');
+      return;
+    }
+    // Salva no backend
+    try {
+      await fetch(URL_DEFINE + '/calendar/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: selectedDate,
+          title: eventTitle,
+          description: eventDesc,
+          color: eventColor,
+        }),
+      });
+      // Atualiza localmente
+      setEvents(prev => ({
+        ...prev,
+        [selectedDate]: {
+          marked: true,
+          dotColor: eventColor,
+          customStyles: {
+            container: { backgroundColor: eventColor },
+            text: { color: '#fff' }
           },
+          title: eventTitle,
+          desc: eventDesc,
+          color: eventColor,
         }
-      : {}),
-  };
+      }));
+      setModalVisible(false);
+    } catch (e) {
+      alert('Erro ao salvar evento!');
+    }
+  }
+
+  // Monta as marcações para o calendário
+  const markedDates = {};
+  Object.keys(events).forEach(date => {
+    markedDates[date] = {
+      marked: true,
+      dotColor: events[date].color,
+      customStyles: {
+        container: { backgroundColor: events[date].color },
+        text: { color: '#fff' }
+      }
+    };
+  });
 
   return (
     <View style={{ marginTop: 10 }}>
       <Calendar
         onDayPress={handleDayPress}
-        markedDates={finalMarkedDates}
+        markedDates={markedDates}
+        markingType={'custom'}
         theme={{
-          backgroundColor: COLORS.white, // fundo branco
-          calendarBackground: COLORS.white, // fundo branco
+          backgroundColor: COLORS.white,
+          calendarBackground: COLORS.white,
           todayTextColor: COLORS.buttonBg,
           selectedDayBackgroundColor: COLORS.buttonBg,
           selectedDayTextColor: COLORS.white,
-          dayTextColor: '#222', // preto para máximo contraste
+          dayTextColor: '#222',
           textDisabledColor: COLORS.subtitle,
           monthTextColor: COLORS.buttonBg,
           arrowColor: COLORS.buttonBg,
@@ -74,23 +115,82 @@ function CalendarSection() {
           textMonthFontSize: 18,
         }}
       />
-      {selectedDate !== '' && (
-        <View style={{ marginTop: 10 }}>
-          <Text style={{ fontWeight: 'bold', color: COLORS.buttonBg, fontSize: 16 }}>
-            {selectedDate}
-          </Text>
-          <Text
-            style={{
-              marginTop: 6,
-              color: COLORS.white, // agora o texto do dia selecionado fica branco
-              fontSize: 15,
-              fontWeight: 'bold',
-            }}
-          >
-            {details}
-          </Text>
+
+      {/* Exibe detalhes do evento do dia selecionado */}
+      {selectedDate && events[selectedDate] && (
+        <View style={{ marginTop: 16, backgroundColor: events[selectedDate].color, borderRadius: 8, padding: 12 }}>
+          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>{events[selectedDate].title}</Text>
+          <Text style={{ color: '#fff', marginTop: 4 }}>{events[selectedDate].desc}</Text>
         </View>
       )}
+
+      {/* Modal para criar evento */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <TouchableWithoutFeedback>
+              <View style={{
+                backgroundColor: '#fff',
+                borderRadius: 12,
+                padding: 24,
+                width: 320,
+                alignItems: 'center'
+              }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Novo Evento</Text>
+                <TextInput
+                  placeholder="Título"
+                  value={eventTitle}
+                  onChangeText={setEventTitle}
+                  style={{ borderWidth: 1, borderColor: '#2563eb', borderRadius: 8, width: '100%', marginBottom: 10, padding: 8 }}
+                />
+                <TextInput
+                  placeholder="Descrição"
+                  value={eventDesc}
+                  onChangeText={setEventDesc}
+                  style={{ borderWidth: 1, borderColor: '#2563eb', borderRadius: 8, width: '100%', marginBottom: 10, padding: 8 }}
+                />
+                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                  {colorOptions.map(opt => (
+                    <TouchableOpacity
+                      key={opt.color}
+                      onPress={() => setEventColor(opt.color)}
+                      style={{
+                        width: 28, height: 28, borderRadius: 14,
+                        backgroundColor: opt.color,
+                        marginHorizontal: 6,
+                        borderWidth: eventColor === opt.color ? 3 : 1,
+                        borderColor: eventColor === opt.color ? '#222' : '#ccc'
+                      }}
+                    />
+                  ))}
+                </View>
+                <TouchableOpacity
+                  onPress={saveEvent}
+                  style={{
+                    backgroundColor: '#2563eb',
+                    borderRadius: 8,
+                    paddingVertical: 10,
+                    paddingHorizontal: 24,
+                    marginTop: 10
+                  }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Salvar Evento</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 }
@@ -125,6 +225,34 @@ export default function FunctionScreen() {
       }
     }
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const response = await fetch(URL_DEFINE + '/calendar/all');
+        const data = await response.json();
+        // Transforma para o formato do markedDates
+        const eventsObj = {};
+        data.forEach(ev => {
+          eventsObj[ev.date] = {
+            marked: true,
+            dotColor: ev.color,
+            customStyles: {
+              container: { backgroundColor: ev.color },
+              text: { color: '#fff' }
+            },
+            title: ev.title,
+            desc: ev.description,
+            color: ev.color,
+          };
+        });
+        setEvents(eventsObj);
+      } catch (e) {
+        // erro ao buscar eventos
+      }
+    }
+    fetchEvents();
   }, []);
 
   const empresaOptions = [

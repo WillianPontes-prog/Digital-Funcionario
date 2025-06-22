@@ -33,6 +33,12 @@ class CEO(BaseModel):
     email: str
     password: str
     
+class CalendarEvent(BaseModel):
+    date: str
+    title: str
+    description: str
+    color: str
+
 @app.get("/")
 def read_root():
     return {"message": "API funcionando!"}
@@ -82,3 +88,12 @@ def get_current_user():
 def get_company_details():
     company_details = database.get_company_details()
     return company_details if company_details else {"message": "Nenhuma empresa cadastrada."}
+
+@app.post("/calendar/add")
+def add_event(event: CalendarEvent):
+    database.add_calendar_event(event.date, event.title, event.description, event.color)
+    return {"status": "ok"}
+
+@app.get("/calendar/all")
+def get_events():
+    return database.get_calendar_events()

@@ -1,1 +1,1 @@
-export const URL_DEFINE = "http://192.168.56.1:8000";export const BASE_URL = "192.168.56.1:8000";
+export const URL_DEFINE = "http://192.168.0.169:8081";export const BASE_URL = "192.168.0.169:8081";

@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
@@ -97,3 +97,8 @@ def add_event(event: CalendarEvent):
 @app.get("/calendar/all")
 def get_events():
     return database.get_calendar_events()
+
+@app.post("/calendar/delete")
+def delete_event(date: str = Body(...)):
+    database.delete_calendar_event(date)
+    return {"status": "deleted"}

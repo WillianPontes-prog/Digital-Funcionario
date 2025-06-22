@@ -2,7 +2,7 @@ import sqlalchemy
 import pandas as pd
 
 user = "root" 
-password = "SUA_SENHA_AQUI" 
+password = "254883" 
 host = "localhost" 
 port = 3306
 database = "aps"
@@ -176,3 +176,12 @@ def get_calendar_events():
             for row in result
         ]
         return events
+
+def delete_calendar_event(date: str):
+    with engine.begin() as connection:
+        connection.execute(
+            sqlalchemy.text(
+                "DELETE FROM calendar_events WHERE date = :date"
+            ),
+            {"date": date}
+        )

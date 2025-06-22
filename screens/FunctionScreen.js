@@ -46,7 +46,6 @@ function CalendarSection() {
       alert('Digite um título para o evento.');
       return;
     }
-    // Salva no backend
     try {
       await fetch(URL_DEFINE + '/calendar/add', {
         method: 'POST',
@@ -58,22 +57,8 @@ function CalendarSection() {
           color: eventColor,
         }),
       });
-      // Atualiza localmente
-      setEvents(prev => ({
-        ...prev,
-        [selectedDate]: {
-          marked: true,
-          dotColor: eventColor,
-          customStyles: {
-            container: { backgroundColor: eventColor },
-            text: { color: '#fff' }
-          },
-          title: eventTitle,
-          desc: eventDesc,
-          color: eventColor,
-        }
-      }));
       setModalVisible(false);
+      fetchEvents(); // <-- Atualiza eventos do backend!
     } catch (e) {
       alert('Erro ao salvar evento!');
     }
@@ -91,6 +76,34 @@ function CalendarSection() {
       }
     };
   });
+
+  async function fetchEvents() {
+    try {
+      const response = await fetch(URL_DEFINE + '/calendar/all');
+      const data = await response.json();
+      const eventsObj = {};
+      data.forEach(ev => {
+        eventsObj[ev.date] = {
+          marked: true,
+          dotColor: ev.color,
+          customStyles: {
+            container: { backgroundColor: ev.color },
+            text: { color: '#fff' }
+          },
+          title: ev.title,
+          desc: ev.description,
+          color: ev.color,
+        };
+      });
+      setEvents(eventsObj);
+    } catch (e) {
+      // erro ao buscar eventos
+    }
+  }
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   return (
     <View style={{ marginTop: 10 }}>
@@ -121,6 +134,31 @@ function CalendarSection() {
         <View style={{ marginTop: 16, backgroundColor: events[selectedDate].color, borderRadius: 8, padding: 12 }}>
           <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>{events[selectedDate].title}</Text>
           <Text style={{ color: '#fff', marginTop: 4 }}>{events[selectedDate].desc}</Text>
+          <TouchableOpacity
+            style={{
+              marginTop: 10,
+              backgroundColor: '#ef4444',
+              borderRadius: 6,
+              paddingVertical: 8,
+              paddingHorizontal: 16,
+              alignSelf: 'flex-end'
+            }}
+            onPress={async () => {
+              try {
+                await fetch(URL_DEFINE + '/calendar/delete', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(selectedDate),
+                });
+                fetchEvents();
+                setSelectedDate('');
+              } catch (e) {
+                alert('Erro ao deletar evento!');
+              }
+            }}
+          >
+            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Deletar Evento</Text>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -225,34 +263,6 @@ export default function FunctionScreen() {
       }
     }
     fetchUser();
-  }, []);
-
-  useEffect(() => {
-    async function fetchEvents() {
-      try {
-        const response = await fetch(URL_DEFINE + '/calendar/all');
-        const data = await response.json();
-        // Transforma para o formato do markedDates
-        const eventsObj = {};
-        data.forEach(ev => {
-          eventsObj[ev.date] = {
-            marked: true,
-            dotColor: ev.color,
-            customStyles: {
-              container: { backgroundColor: ev.color },
-              text: { color: '#fff' }
-            },
-            title: ev.title,
-            desc: ev.description,
-            color: ev.color,
-          };
-        });
-        setEvents(eventsObj);
-      } catch (e) {
-        // erro ao buscar eventos
-      }
-    }
-    fetchEvents();
   }, []);
 
   const empresaOptions = [

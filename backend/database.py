@@ -71,6 +71,18 @@ with engine.begin() as connection:
         )
     """))
 
+    connection.execute(sqlalchemy.text("""
+        CREATE TABLE IF NOT EXISTS relatorios (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nome_arquivo VARCHAR(255),
+            caminho_arquivo TEXT,
+            data_upload DATETIME DEFAULT CURRENT_TIMESTAMP,
+            enviado_por VARCHAR(100),
+            descricao TEXT
+            )
+    """))
+
+
 def insert_employee(name: str, email: str, password: str):
     with engine.begin() as connection:  # Usa begin() para garantir o commit automático
         connection.execute(
@@ -120,7 +132,7 @@ def check_login(email: str, password: str):
     with engine.connect() as connection:
         result = connection.execute(
             sqlalchemy.text(
-                "SELECT login, senha, tipo FROM user WHERE login = :email AND senha = :password"
+                "SELECT login, senha, nome, tipo FROM user WHERE login = :email AND senha = :password"
             ),
             {"email": email, "password": password}
         )
@@ -128,7 +140,7 @@ def check_login(email: str, password: str):
         resultado = result.fetchone()
         
         if resultado is not None:
-            set_user_type(resultado.tipo)
+            set_user_type(resultado.tipo, resultado.nome)
             return True # Retorna True se houver um resultado
         print("Login ou senha incorretos.")
         return False
@@ -152,10 +164,10 @@ def add_user_CEO(login: str, senha: str, nome: str):
             ),
             {"login": login, "senha": senha, "nome": nome}
         )
-        set_user_type('CEO')
+        set_user_type('CEO', nome)
 
-def set_user_type(resultado):
-    current_user = {"usertype": resultado}
+def set_user_type(typeUser, name):
+    current_user = {"usertype": typeUser, "name": name}
     current_user = pd.DataFrame([current_user])
     current_user.to_csv('current_user.csv', index=False)
 
@@ -187,3 +199,16 @@ def delete_calendar_event(date: str):
             ),
             {"date": date}
         )
+
+def inserir_relatorio(nome_arquivo, caminho, enviado_por, descricao):
+    from sqlalchemy import text
+    with engine.begin() as conn:
+        conn.execute(text("""
+            INSERT INTO relatorios (nome_arquivo, caminho_arquivo, enviado_por, descricao)
+            VALUES (:nome, :caminho, :enviado, :descricao)
+        """), {
+            "nome": nome_arquivo,
+            "caminho": caminho,
+            "enviado": enviado_por,
+            "descricao": descricao
+        })

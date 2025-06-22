@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, UploadFile, File, Form
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import database
+import shutil
+import os
 
 app = FastAPI()
 
@@ -102,3 +104,30 @@ def get_events():
 def delete_event(date: str = Body(...)):
     database.delete_calendar_event(date)
     return {"status": "deleted"}
+
+@app.post("/uploadRelatorio")
+def upload_relatorio(
+    file: UploadFile = File(None)
+):
+    caminho_arquivo = ""
+    if file:
+        pasta_destino = "relatorios"
+        os.makedirs(pasta_destino, exist_ok=True)
+        caminho_arquivo = os.path.join(pasta_destino, file.filename)
+        with open(caminho_arquivo, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        nome_arquivo = file.filename
+    else:
+        nome_arquivo = "Relatório sem arquivo"
+
+    # Insere tudo no banco mesmo sem o arquivo
+    database.inserir_relatorio(
+        nome_arquivo=nome_arquivo,
+        caminho=caminho_arquivo,
+        enviado_por= pd.read_csv('current_user.csv')['name'].values[0],
+        descricao= "ok"
+    )
+
+    return {"message": "Relatório enviado com sucesso!"}
+
+

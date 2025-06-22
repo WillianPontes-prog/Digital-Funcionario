@@ -265,6 +265,29 @@ export default function FunctionScreen() {
     fetchUser();
   }, []);
 
+  async function fetchCompanyDetails() {
+    try {
+      const response = await fetch(URL_DEFINE + '/getCompanyDetails');
+      const data = await response.json();
+
+      if (data.nome && data.tipo) {
+        setNomeEmpresa(data.nome);
+
+        const tipoEncontrado = empresaOptions.find(opt => opt.label === data.tipo);
+        if (tipoEncontrado) {
+          setValorSelecionado(tipoEncontrado.value);  
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao carregar dados da empresa:', err);
+    }
+  }
+
+  useEffect(() => {
+    fetchCompanyDetails();
+  }, []);
+
+
   const empresaOptions = [
     { label: "Selecione Sua Empresa", value: "opcao1" },
     { label: "Restaurante", value: "opcao2" },
@@ -397,19 +420,36 @@ export default function FunctionScreen() {
           <View style={styles.dropZone}>
             <Text style={styles.dropText}>Arraste seus documentos aqui</Text>
           </View>
-          <TouchableOpacity style={styles.uploadButton}onPress={async () => {
+          <TouchableOpacity style={styles.uploadButton} onPress={async () => {
               try {
                 const result = await DocumentPicker.getDocumentAsync({});
-
                 if (result.type === 'success') {
-                  alert(`Arquivo selecionado: ${result.name}`);
-                  // Aqui você pode enviar para seu backend ou armazenar localmente
+                  const formData = new FormData();
+                  formData.append('file', {
+                    uri: result.uri,
+                    name: result.name,
+                    type: result.mimeType || 'application/octet-stream',
+                  });
+
+                  const response = await fetch(URL_DEFINE + '/uploadRelatorio', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'multipart/form-data',
+                    },
+                    body: formData,
+                  });
+
+                  if (response.ok) {
+                    alert('Relatório enviado com sucesso!');
+                  } else {
+                    alert('Erro ao enviar relatório.');
+                  }
                 } else {
                   alert('Nenhum arquivo selecionado.');
                 }
               } catch (error) {
-                console.error('Erro ao selecionar arquivo:', error);
-                alert('Erro ao selecionar arquivo.');
+                console.error('Erro ao selecionar ou enviar arquivo:', error);
+                alert('Erro ao selecionar ou enviar arquivo.');
               }
             }}>
             <Text style={styles.uploadButtonText}>Upload</Text>

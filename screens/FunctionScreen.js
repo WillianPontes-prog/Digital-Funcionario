@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -420,29 +420,40 @@ export default function FunctionScreen() {
           <View style={styles.dropZone}>
             <Text style={styles.dropText}>Arraste seus documentos aqui</Text>
           </View>
-          <TouchableOpacity style={styles.uploadButton} onPress={async () => {
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={async () => {
               try {
-                const result = await DocumentPicker.getDocumentAsync({});
-                if (result.type === 'success') {
+                const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true });
+                const file = result.assets ? result.assets[0] : result;
+                console.log('Arquivo selecionado:', file);
+
+                if (file && (file.uri || file.file)) {
                   const formData = new FormData();
-                  formData.append('file', {
-                    uri: result.uri,
-                    name: result.name,
-                    type: result.mimeType || 'application/octet-stream',
-                  });
+
+                  if (Platform.OS === 'web' && file.file) {
+                    // Web: use o objeto File diretamente
+                    formData.append('file', file.file, file.name);
+                  } else {
+                    // Mobile: use uri
+                    formData.append('file', {
+                      uri: file.uri,
+                      name: file.name || 'relatorio.pdf',
+                      type: file.mimeType || 'application/pdf',
+                    });
+                  }
 
                   const response = await fetch(URL_DEFINE + '/uploadRelatorio', {
                     method: 'POST',
-                    headers: {
-                      'Content-Type': 'multipart/form-data',
-                    },
                     body: formData,
                   });
 
                   if (response.ok) {
                     alert('Relatório enviado com sucesso!');
                   } else {
-                    alert('Erro ao enviar relatório.');
+                    const errorText = await response.text();
+                    console.log('Erro do backend:', errorText);
+                    alert('Erro ao enviar relatório: ' + errorText);
                   }
                 } else {
                   alert('Nenhum arquivo selecionado.');
@@ -451,7 +462,8 @@ export default function FunctionScreen() {
                 console.error('Erro ao selecionar ou enviar arquivo:', error);
                 alert('Erro ao selecionar ou enviar arquivo.');
               }
-            }}>
+            }}
+          >
             <Text style={styles.uploadButtonText}>Upload</Text>
           </TouchableOpacity>
         </View>

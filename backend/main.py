@@ -28,6 +28,11 @@ class Login(BaseModel):
     email: str
     password: str
 
+class CEO(BaseModel):
+    name: str
+    email: str
+    password: str
+    
 @app.get("/")
 def read_root():
     return {"message": "API funcionando!"}
@@ -58,3 +63,22 @@ def get_login(item: Login):
         return {"status": 200}
     else:
         return {"status": 401}
+
+@app.post("/registrarCEO")
+def registrar_ceo(item: CEO):
+    database.add_user_CEO(item.name, item.email, item.password)
+    database.check_login(item.email, item.password)
+
+@app.get("/getCurrentUser")
+def get_current_user():
+   
+    current_user = pd.read_csv('current_user.csv')
+    if not current_user.empty:
+        return current_user.to_dict(orient='records')[0]  # Retorna o primeiro registro como dicionário
+    else:
+        return {"message": "Nenhum usuário atual encontrado."}
+    
+@app.get("/getCompanyDetails")
+def get_company_details():
+    company_details = database.get_company_details()
+    return company_details if company_details else {"message": "Nenhuma empresa cadastrada."}

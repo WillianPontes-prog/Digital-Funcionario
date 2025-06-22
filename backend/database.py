@@ -89,6 +89,20 @@ def get_all_employees():
         ]
         return employees
     
+def get_company_details():
+    with engine.connect() as connection:
+        result = connection.execute(
+            sqlalchemy.text("SELECT * FROM empresa")
+        )
+        company_details = result.fetchone()
+        if company_details:
+            return {
+                "nome": company_details.nome,
+                "tipo": company_details.tipo
+            }
+        else:
+            return None
+    
 def check_login(email: str, password: str):
     with engine.connect() as connection:
         result = connection.execute(
@@ -101,11 +115,11 @@ def check_login(email: str, password: str):
         resultado = result.fetchone()
         
         if resultado is not None:
-            current_user = {"usertype": resultado.tipo}
-            current_user = pd.DataFrame([current_user])
-            current_user.to_csv('current_user.csv', index=False)
+            set_user_type(resultado.tipo)
             return True # Retorna True se houver um resultado
+        print("Login ou senha incorretos.")
         return False
+    
 
 def add_user_marketing(login: str, senha: str, nome: str):
     with engine.begin() as connection:
@@ -125,5 +139,9 @@ def add_user_CEO(login: str, senha: str, nome: str):
             ),
             {"login": login, "senha": senha, "nome": nome}
         )
-        print("Usuário Marketing inserido com sucesso!")
+        set_user_type('CEO')
 
+def set_user_type(resultado):
+    current_user = {"usertype": resultado}
+    current_user = pd.DataFrame([current_user])
+    current_user.to_csv('current_user.csv', index=False)

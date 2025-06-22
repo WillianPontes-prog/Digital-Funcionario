@@ -41,6 +41,13 @@ class CalendarEvent(BaseModel):
     description: str
     color: str
 
+class Instagram(BaseModel):
+    username: str
+    password: str
+
+class WhatsApp(BaseModel):
+    phone_number: str
+
 @app.get("/")
 def read_root():
     return {"message": "API funcionando!"}
@@ -130,4 +137,23 @@ def upload_relatorio(
 
     return {"message": "Relatório enviado com sucesso!"}
 
+@app.post("/configurarInstagram")
+def configurar_instagram(data: Instagram):
+    database.salvar_instagram_config(data.username, data.password)
+    return {"status": "Instagram configurado"}
+
+@app.post("/configurarWhatsapp")
+def configurar_whatsapp(data: WhatsApp):
+    database.salvar_whatsapp_config(data.phone_number)
+    return {"status": "WhatsApp configurado"}
+
+@app.get("/getInstagram")
+def get_instagram():
+    instagram_data = database.get_instagram()
+    return instagram_data if instagram_data else {"message": "Nenhum Instagram cadastrado."}
+
+@app.get("/getWhatsapp")
+def get_whatsapp():
+    whatsapp_data = database.get_whatsapp()
+    return whatsapp_data if whatsapp_data else {"message": "Nenhum WhatsApp cadastrado."}
 

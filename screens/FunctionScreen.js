@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
@@ -111,6 +111,21 @@ export default function FunctionScreen() {
   const [numeroWhatsapp, setNumeroWhatsapp] = useState('');
 
   const [activeSubsections, setActiveSubsections] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await fetch(URL_DEFINE + '/getCurrentUser');
+        const data = await response.json();
+        // Ajuste conforme o retorno do seu backend
+        setCurrentUser(data.usertype || data[0]?.usertype || null);
+      } catch (error) {
+        setCurrentUser(null);
+      }
+    }
+    fetchUser();
+  }, []);
 
   const empresaOptions = [
     { label: "Selecione Sua Empresa", value: "opcao1" },
@@ -120,6 +135,7 @@ export default function FunctionScreen() {
     { label: "Pet Shop", value: "opcao5" },
   ];
 
+  // Defina SECTIONS normalmente (como você já faz)
   const SECTIONS = [
     {
       title: 'Cadastrar Funcionário (CEO)',
@@ -174,14 +190,16 @@ export default function FunctionScreen() {
           </TouchableOpacity>
         </View>
       ),
+      only: 'CEO', // Adicione uma chave para indicar para quem mostrar
     },
     {
       title: 'Calendário de Postagem (Marketing)',
       content: <CalendarSection />,
+      only: 'Marketing',
     },
     {
       title: 'Configurar Detalhes da Empresa (CEO)',
-      content: <View>
+      content: (<View>
         <TextInput
             style={styles.input}
             onChangeText={setNomeEmpresa}
@@ -231,7 +249,8 @@ export default function FunctionScreen() {
         >
           <Text style={styles.buttonText}>Cadastrar Empresa</Text>
         </TouchableOpacity>
-      </View>
+      </View>),
+      only: 'CEO', 
     },
     {
       title: 'Upload de Relatórios (CEO)',
@@ -259,10 +278,11 @@ export default function FunctionScreen() {
           </TouchableOpacity>
         </View>
       ),
+      only: 'CEO', 
     },
     {
       title: 'Gerar Relatórios (CEO)',
-      content: <View>
+      content: (<View>
         <TextInput
             style={styles.input}
             onChangeText={setRelatorio}
@@ -277,7 +297,8 @@ export default function FunctionScreen() {
         >
           <Text style={styles.buttonText}>Gerar Relatório</Text>
         </TouchableOpacity>
-      </View>
+      </View>),
+      only: 'CEO', 
     },
     {
       title: 'Cadastrar Redes Sociais (Marketing)',
@@ -353,10 +374,17 @@ export default function FunctionScreen() {
           />
         </ScrollView>
       ),
+      only: 'Marketing', 
 },
 
 
   ];
+
+  // Filtre as seções conforme o usuário
+  const filteredSections = SECTIONS.filter(
+    section =>
+      !section.only || section.only === currentUser
+  );
 
   const renderHeader = (section, _, isActive) => (
     <View style={[styles.box, isActive && styles.activeBox]}>
@@ -380,7 +408,7 @@ export default function FunctionScreen() {
         keyboardDismissMode="on-drag"
       >
         <Accordion
-          sections={SECTIONS}
+          sections={filteredSections}
           activeSections={activeSections}
           renderHeader={renderHeader}
           renderContent={renderContent}

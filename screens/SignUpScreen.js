@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from './colors';
+import { URL_DEFINE } from './defines';
 
 export default function SignupScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -9,7 +10,7 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
@@ -20,9 +21,29 @@ export default function SignupScreen({ navigation }) {
       return;
     }
 
-    // Aqui você pode adicionar lógica para enviar os dados para backend, etc.
+    // Chama o endpoint para adicionar CEO
+    try {
+      const response = await fetch(URL_DEFINE+'/registrarCEO', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password
+        }),
+      });
 
-    navigation.navigate('Main');
+      if (response.ok) {
+        Alert.alert('Sucesso', 'Usuário CEO cadastrado com sucesso!');
+        navigation.navigate('Main');
+      } else {
+        Alert.alert('Erro', 'Não foi possível cadastrar o usuário.');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro de conexão com o servidor.');
+    }
   };
 
   return (

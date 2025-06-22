@@ -2,7 +2,7 @@ import sqlalchemy
 import pandas as pd
 
 user = "root" 
-password = "Ailil24vet" 
+password = "254883" 
 host = "localhost" 
 port = 3306
 database = "aps"

@@ -6,7 +6,7 @@ eu to commitando com minhas alterações então voces vao ter que mexer na de vo
 2- para fazer funcionar qualquer coisa de salvamento é necessário:
     criar o banco de dados chamado aps;
     verificar as informações de porta, host e senha.
-    alterar o que for necessário em database.py para ser compativel com seu banco de dados.
+    alterar o que for necessário em database.py para ser compativel com seu banco de dados.*************NAO PRECISA MAIS, arrumem agora o setEnvs.py, assim so precisa configurar uma vez pro database
 3- rode o backend com: uvicorn main:app --reload --host 0.0.0.0 --port 8081
                                                                     ^isso aqui em cima vai mudar dependendo da porta do site
 4- rode o npm start. ele não vai funcionar nada relacionado ao banco de dados ainda. 

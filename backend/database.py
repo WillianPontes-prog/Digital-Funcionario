@@ -1,11 +1,13 @@
 import sqlalchemy
 import pandas as pd
+import os
+import setEnvs
 
-user = "root" 
-password = "254883" 
-host = "localhost" 
-port = 3306
-database = "aps"
+user = os.environ["user"]
+password = os.environ["password"] 
+host = os.environ["host"] 
+port = os.environ["port"]
+database = os.environ["database"]
 DATABASE_URL = f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
 engine = sqlalchemy.create_engine(DATABASE_URL)
 

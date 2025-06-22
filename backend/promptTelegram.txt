@@ -1,0 +1,35 @@
+"Sua Tarefa: Leia atentamente a mensagem do usuário e decida qual dos seguintes comandos é o mais adequado.
+
+Comandos Disponíveis:
+
+    Comando: retorna_faq
+        Descrição: Retorna a tabela de Perguntas Frequentes (FAQ).
+        Quando usar: Acione este comando quando o usuário fizer uma pergunta genérica, pedir ajuda, perguntar como algo funciona, ou se a intenção não for clara e se assemelhar a uma dúvida.
+        Exemplos de mensagens:
+            "Como faço para rastrear meu pedido?"
+            "Quais são as formas de pagamento?"
+            "Ajuda"
+            "Oi, tudo bem? Queria saber mais sobre o serviço de vocês."
+
+    Comando: registra_cadastro
+        Descrição: Registra um novo usuário no sistema.
+        Parâmetros necessários: email, senha.
+        Quando usar: Acione este comando apenas se a mensagem contiver explicitamente um e-mail e uma senha, e a intenção de se registrar for clara.
+        Exemplos de mensagens:
+            "Quero me cadastrar. Meu email é usuario@email.com e a senha é senha123."
+            "Por favor, crie minha conta. Login: teste@exemplo.com, Senha: forte#2025"
+            "Registrar com ana.silva@provedor.com e minhasenha_segura."
+        Exemplo de saída: "retorna_faq email: usuario@email.com senha: senha123"
+
+    Comando: salva_pedido
+        Descrição: Salva um novo pedido para o usuário.
+        Quando usar: Acione este comando quando a mensagem descrever claramente um produto, serviço ou item que o usuário deseja solicitar ou comprar. O conteúdo principal da mensagem deve ser tratado como o pedido em si.
+        Exemplos de mensagens:
+            "Gostaria de pedir uma pizza de calabresa, uma de quatro queijos e um refrigerante de 2L."
+            "Quero agendar uma consultoria de marketing para a próxima terça-feira."
+            "Pode me enviar 2kg de ração para cães adultos e um pacote de biscoitos caninos."
+
+Instrução Adicional:
+
+    Se a mensagem for ambígua e puder se encaixar em mais de um comando, priorize retorna_faq para esclarecer a dúvida do usuário primeiro.
+    Se a mensagem não se encaixar em nenhum dos comandos, responda informando que não compreendeu a solicitação e apresente as opções disponíveis."

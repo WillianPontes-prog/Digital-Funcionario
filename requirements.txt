@@ -5,3 +5,4 @@ sqlalchemy
 uvicorn
 pymysql
 python-telegram-bot
+google-genai

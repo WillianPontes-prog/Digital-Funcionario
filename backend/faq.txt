@@ -1,0 +1,5 @@
+1. Q: Qual o instagram da empresa? R: @empresa
+
+2. Q: Qual o telefone de contato da empresa? R: 41 98721263
+
+3. Q: Qual o tipo de serviço que a empresa presta? R: {servico_empresa}

@@ -2,10 +2,10 @@ import logging
 import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
-from database import get_company_details
+from database import get_company_details, inserir_cliente, inserir_pedido
 import geminiConversation
 
-tipoEmpresa = get_company_details().tipo
+tipoEmpresa = get_company_details()["tipo"]
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -15,7 +15,7 @@ logging.basicConfig(
 currentTelegramMessage = None
 
 def ler_faq():
-    with open('faq.txt', encoding='utf-8') as f:
+    with open('backend\\faq.txt', encoding='utf-8') as f:
         faq = f.read()
     return faq.replace('{servico_empresa}', tipoEmpresa)
 
@@ -25,7 +25,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def save_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global currentTelegramMessage
     currentTelegramMessage = update.message.text
-    with open('promptTelegram.txt', encoding='utf-8') as f:
+    with open('backend\\promptTelegram.txt', encoding='utf-8') as f:
         prompt = f.read()
     prompt += '\n\n' + "Mensagem: " + currentTelegramMessage + '\n\n'
     response = geminiConversation.talkTelegram(prompt)
@@ -36,9 +36,15 @@ async def save_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif "registra_cadastro" in response:
         email = response.split("email: ")[-1].split("senha: ")[0].strip()
         senha = response.split("senha: ")[-1].strip() #eu nao faço ideia de que bruxaria é essa, ver melhor depois 
-        print("aqui a gente registra o cadastro")
-    elif response == "registra_empresa":
-        print("aqui a gente registra a empresa")
+        inserir_cliente(email, senha)
+    elif response == "salva_pedido":
+        username = update.effective_user.username
+        if not username:
+            username = update.effective_user.first_name
+        inserir_pedido(currentTelegramMessage, username)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Seu pedido foi salvo com sucesso!")
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Desculpe, não consegui entender sua mensagem. Por favor, tente novamente ou consulte nossa FAQ.")
 
 
 

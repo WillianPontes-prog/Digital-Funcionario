@@ -1,7 +1,10 @@
 from google import genai
 from google.genai import types
-
-client = genai.Client(api_key="YOUR_API_KEY")
+from dotenv import load_dotenv
+import os
+load_dotenv()
+api = os.getenv("GOOGLE_API_KEY")
+client = genai.Client(api_key=api)
 
 
 def talkTelegram(message: str):
@@ -11,4 +14,5 @@ def talkTelegram(message: str):
         system_instruction="Você é um assistente de IA projetado para interpretar mensagens de usuários e encaminhá-las para o sistema correto, escolhendo um dos três comandos disponíveis."), 
         contents=message, 
     )
+    print(response.text)
     return response.text

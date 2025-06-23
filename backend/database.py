@@ -82,6 +82,23 @@ with engine.begin() as connection:
             )
     """))
 
+    connection.execute(sqlalchemy.text("""
+        CREATE TABLE IF NOT EXISTS clientes (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(255) NOT NULL,
+            senha VARCHAR(255) NOT NULL
+        )
+    """))
+
+    connection.execute(sqlalchemy.text("""
+        CREATE TABLE IF NOT EXISTS pedidos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            pedido VARCHAR(255) NOT NULL,
+            dataDeEnvio DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            enviado_por VARCHAR(100) NOT NULL
+        )
+    """))
+
 
 def insert_employee(name: str, email: str, password: str):
     with engine.begin() as connection:  # Usa begin() para garantir o commit automático
@@ -211,4 +228,26 @@ def inserir_relatorio(nome_arquivo, caminho, enviado_por, descricao):
             "caminho": caminho,
             "enviado": enviado_por,
             "descricao": descricao
+        })
+
+def inserir_cliente(email, senha):
+    from sqlalchemy import text
+    with engine.begin() as conn:
+        conn.execute(text("""
+            INSERT INTO clientes (email, senha)
+            VALUES (:email, :senha)
+        """), {
+            "email": email,
+            "senha": senha
+        })
+
+def inserir_pedido(pedido, enviado_por):
+    from sqlalchemy import text
+    with engine.begin() as conn:
+        conn.execute(text("""
+            INSERT INTO pedidos (pedido, enviado_por)
+            VALUES (:pedido, :enviado_por)
+        """), {
+            "pedido": pedido,
+            "enviado_por": enviado_por
         })

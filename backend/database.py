@@ -99,6 +99,22 @@ with engine.begin() as connection:
         )
     """))
 
+    # Tabela de configuração do Instagram
+    connection.execute(sqlalchemy.text("""
+        CREATE TABLE IF NOT EXISTS instagram_config (
+            id INT PRIMARY KEY,
+            username VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL
+        )
+    """))
+
+    # Tabela de configuração do WhatsApp
+    connection.execute(sqlalchemy.text("""
+        CREATE TABLE IF NOT EXISTS whatsapp_config (
+            id INT PRIMARY KEY,
+            phone_number VARCHAR(20) NOT NULL
+        )
+    """))
 
 def insert_employee(name: str, email: str, password: str):
     with engine.begin() as connection:  # Usa begin() para garantir o commit automático
@@ -251,3 +267,38 @@ def inserir_pedido(pedido, enviado_por):
             "pedido": pedido,
             "enviado_por": enviado_por
         })
+def salvar_instagram_config(username: str, password: str):
+    with engine.begin() as connection:
+        connection.execute(sqlalchemy.text("""
+            INSERT INTO instagram_config (id, username, password)
+            VALUES (1, :username, :password)
+            ON DUPLICATE KEY UPDATE username = VALUES(username), password = VALUES(password)
+        """), {"username": username, "password": password})
+
+
+def salvar_whatsapp_config(phone_number: str):
+    with engine.begin() as connection:
+        connection.execute(sqlalchemy.text("""
+            INSERT INTO whatsapp_config (id, phone_number)
+            VALUES (1, :phone_number)
+            ON DUPLICATE KEY UPDATE phone_number = VALUES(phone_number)
+        """), {"phone_number": phone_number})
+
+def get_instagram():
+    with engine.connect() as connection:
+        result = connection.execute(
+            sqlalchemy.text("SELECT username, password FROM instagram_config WHERE id = 1")
+        ).fetchone()
+        if result:
+            return {"username": result.username, "password": result.password}
+        return None
+
+def get_whatsapp():
+    with engine.connect() as connection:
+        result = connection.execute(
+            sqlalchemy.text("SELECT phone_number FROM whatsapp_config WHERE id = 1")
+        ).fetchone()
+        if result:
+            return {"phone_number": result.phone_number}
+        return None
+

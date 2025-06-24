@@ -287,6 +287,33 @@ export default function FunctionScreen() {
     fetchCompanyDetails();
   }, []);
 
+  useEffect(() => {
+    async function fetchSocials() {
+      try {
+        const [igRes, waRes] = await Promise.all([
+          fetch(URL_DEFINE + '/getInstagram'),
+          fetch(URL_DEFINE + '/getWhatsapp'),
+        ]);
+
+        const igData = await igRes.json();
+        const waData = await waRes.json();
+
+        if (igData && igData.username) {
+          setNomeInstagram(igData.username);
+          setSenhaInstagram(igData.password); // se quiser também
+        }
+
+        if (waData && waData.phone_number) {
+          setNumeroWhatsapp(waData.phone_number);
+        }
+      } catch (error) {
+        console.log('Erro ao buscar redes sociais:', error);
+      }
+    }
+
+    fetchSocials();
+  }, []);
+
 
   const empresaOptions = [
     { label: "Selecione Sua Empresa", value: "opcao1" },
@@ -522,7 +549,24 @@ export default function FunctionScreen() {
                     />
                     <TouchableOpacity
                       style={styles.button}
-                      onPress={() => alert('Instagram cadastrado!')}
+                      onPress={async () => {
+                        try {
+                          await fetch(URL_DEFINE + '/configurarInstagram', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                              username: nomeInstagram,
+                              password: senhaInstagram
+                            })
+                          });
+                          alert('Instagram cadastrado!');
+                        } catch (err) {
+                          alert('Erro ao cadastrar Instagram');
+                          console.error(err);
+                        }
+                      }}
                     >
                       <Text style={styles.buttonText}>Cadastrar Instagram</Text>
                     </TouchableOpacity>
@@ -542,7 +586,23 @@ export default function FunctionScreen() {
                     />
                     <TouchableOpacity
                       style={styles.button}
-                      onPress={() => alert('WhatsApp cadastrado!')}
+                      onPress={async () => {
+                        try {
+                          await fetch(URL_DEFINE + '/configurarWhatsapp', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                              phone_number: numeroWhatsapp
+                            })
+                          });
+                          alert('WhatsApp cadastrado!');
+                        } catch (err) {
+                          alert('Erro ao cadastrar WhatsApp');
+                          console.error(err);
+                        }
+                      }}
                     >
                       <Text style={styles.buttonText}>Cadastrar WhatsApp</Text>
                     </TouchableOpacity>

@@ -4,6 +4,7 @@ pandas
 sqlalchemy
 uvicorn
 pymysql
+python-multipart
 python-telegram-bot
 google-genai
 python-dotenv

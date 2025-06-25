@@ -445,7 +445,7 @@ export default function FunctionScreen() {
       content: (
         <View style={styles.uploadContainer}>
           <View style={styles.dropZone}>
-            <Text style={styles.dropText}>Arraste seus documentos aqui</Text>
+            <Text style={styles.dropText}>Faça o upload de seu documento</Text>
           </View>
           <TouchableOpacity
             style={styles.uploadButton}
@@ -495,26 +495,6 @@ export default function FunctionScreen() {
           </TouchableOpacity>
         </View>
       ),
-      only: 'CEO', 
-    },
-    {
-      title: 'Gerar Relatórios (CEO)',
-      content: (<View>
-        <TextInput
-            style={styles.input}
-            onChangeText={setRelatorio}
-            value={relatorio}
-            placeholder="Descreva Brevemente o Conteúdo do Relatório"
-            placeholderTextColor="#64748b"
-            keyboardType='default'
-          />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => alert('Relatório gerado!')}
-        >
-          <Text style={styles.buttonText}>Gerar Relatório</Text>
-        </TouchableOpacity>
-      </View>),
       only: 'CEO', 
     },
     {

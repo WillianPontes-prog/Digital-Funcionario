@@ -5,6 +5,8 @@ import pandas as pd
 import database
 import shutil
 import os
+from geminiConversation import TalkChat
+import re
 
 app = FastAPI()
 
@@ -48,6 +50,9 @@ class Instagram(BaseModel):
 class WhatsApp(BaseModel):
     phone_number: str
 
+class Message(BaseModel):
+    message: str
+
 @app.get("/")
 def read_root():
     return {"message": "API funcionando!"}
@@ -81,7 +86,7 @@ def get_login(item: Login):
 
 @app.post("/registrarCEO")
 def registrar_ceo(item: CEO):
-    database.add_user_CEO(item.name, item.email, item.password)
+    database.add_user_CEO( item.email, item.password, item.name)
     database.check_login(item.email, item.password)
 
 @app.get("/getCurrentUser")
@@ -156,4 +161,121 @@ def get_instagram():
 def get_whatsapp():
     whatsapp_data = database.get_whatsapp()
     return whatsapp_data if whatsapp_data else {"message": "Nenhum WhatsApp cadastrado."}
+
+@app.post("/mandarMensagem")
+def get_msg(message: Message):
+    import random
+    
+    with open('promptChat.txt', encoding='utf-8') as f:
+        prompt = f.read()
+    prompt += '\n\n' + "Mensagem: " + message.message + '\n\n'
+    
+    response = TalkChat(prompt)
+
+    if "criar_relatorio" in response:
+        return {"name": "criar_relatorio"}
+    
+    elif "listar_funcionarios" in response:
+        employeelist = database.get_all_employees()
+        sendMessage = "Lista de funcionários:\n" + "\n".join([f"{emp['name']} - {emp['email']}" for emp in employeelist])
+        return {"name": sendMessage}
+
+    elif "adicionar_postagem_calendario" in response:
+        # Exemplo de response: "adicionar_postagem_calendario data: 27/07 titulo: Podridão descricao: escarlate"
+        calendarData = response.split("adicionar_postagem_calendario")[1].strip()
+        # Usando regex para extrair os campos
+        match = re.search(r'data:\s*([^\s]+)\s+titulo:\s*([^\s]+.*?)\s+descricao:\s*(.+)', calendarData)
+        if match:
+            calendarDate = match.group(1).strip()
+            calendarTitle = match.group(2).strip()
+            calendarDescription = match.group(3).strip()
+            database.add_calendar_event(
+                date=calendarDate,
+                title=calendarTitle,
+                description=calendarDescription,
+                color="#B30CC2"  
+            )
+            return {"name": "Postagem adicionada ao calendário com sucesso!"}
+        else:
+            return {"name": "Formato inválido para adicionar postagem no calendário."}
+    
+    elif "exibir_ajuda" in response:
+        # Ajuda resumida
+        ajuda_completa = """🦅 URUBU DO PIX - AJUDA 🦅
+
+Posso te ajudar com:
+• Relatórios e arquivos
+• Lista de funcionários  
+• Calendário e eventos
+• Configurar redes sociais
+• Responder dúvidas
+
+Digite naturalmente o que precisa, ex:
+"criar relatório", "mostrar funcionários", "meu nome"
+
+Qualquer dúvida, só perguntar!"""
+        
+        return {"name": ajuda_completa}
+
+    elif "responder_nome" in response:
+        # Lista pequena de respostas apresentando o nome
+        respostas_nome = [
+            "Sou o Urubu do Pix",
+            "Meu nome é Urubu do Pix",
+            "Urubu do Pix, prazer",
+            "Pode me chamar de Urubu do Pix",
+            "Urubu do Pix aqui"
+        ]
+        
+        resposta_nome_aleatoria = random.choice(respostas_nome)
+        return {"name": resposta_nome_aleatoria}
+    else:
+        # Lista de respostas engraçadas para quando não entender
+        respostas_engracadas = [
+            # Estilo mineiro
+            "Uai sô, num intendi foi nada não, cê pode falar de novo aí?",
+            "Trem doido esse, num sei nem por onde começar a intender",
+            "Ocê tá falando grego ou é coisa da minha cabeça mesmo?",
+            "Sô, cê tá querendo me confundir ou eu que sou meio leso mesmo?",
+            "Uai, isso aí é mais difícil que subir em árvore de cabeça pra baixo",
+            
+            # Estilo tristeza existencial
+            "Não entendi, mas pelo menos isso combina com o resto da minha vida",
+            "Como se a vida já não fosse complicada o suficiente, agora você vem com isso",
+            "Ah, mais uma coisa que não entendo... junta com o resto das frustrações da vida",
+            "Não sei o que é pior: não entender você ou entender a vida",
+            "Pelo menos minha confusão é constante, isso já é alguma coisa",
+            
+            # Estilo carioca/RJ
+            "Rapaz, tu tá zoando comigo ou é sério mesmo essa pergunta aí?",
+            "Mano, tu falou grego agora... não entendi foi nada não",
+            "Cara, tu tá de sacanagem comigo né? Não dá pra entender isso não",
+            "Poxa mano, fala português que eu sou brasileiro também",
+            "Tu tá querendo me deixar maluco ou eu já sou assim mesmo?",
+            
+            # Estilo Chico Bento
+            "Caramba, isso aí é mais difíci que pegar sapo no brejo",
+            "Nossa, num entendi nada, parece coisa de gente da cidade grande",
+            "Esse negócio aí é mais complicado que plantar milho na seca",
+            "Puxa vida, isso é mais confuso que galinha tonta no terreiro",
+            "Ixe, tô mais perdido que bezerro desmamado",
+            
+            # Outros engraçados sem emoji
+            "Meu cérebro deu blue screen tentando processar isso",
+            "Acho que preciso de um manual de instruções pra entender você",
+            "Isso é mais complexo que manual de videocassete dos anos 90",
+            "Tô mais confuso que GPS sem internet",
+            "Minha capacidade de compreensão saiu pra almoçar e não voltou",
+            "Isso é mais difícil de entender que a lógica feminina",
+            "Estou processando... ainda processando... erro na matrix",
+            "Meu QI abaixou tanto que chegou em números negativos",
+            "Preciso de um tradutor de confusão pra português claro",
+            "Minha inteligência artificial virou inteligência artesanal",
+            "Melhor perguntar pro Willian"
+        ]
+        
+        resposta_aleatoria = random.choice(respostas_engracadas)
+        return {"name": resposta_aleatoria}
+
+
 

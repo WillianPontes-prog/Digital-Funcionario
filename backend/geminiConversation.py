@@ -16,3 +16,13 @@ def talkTelegram(message: str):
     )
     print(response.text)
     return response.text
+
+def TalkChat(message: str):
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        config=types.GenerateContentConfig(
+        system_instruction="Você é um assistente de IA projetado para interpretar mensagens de usuários e encaminhá-las para o sistema correto, escolhendo um dos comandos disponíveis."), 
+        contents=message, 
+    )
+    print(response.text)
+    return response.text

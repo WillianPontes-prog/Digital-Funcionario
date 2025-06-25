@@ -4,6 +4,10 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 from database import get_company_details, inserir_cliente, inserir_pedido
 import geminiConversation
+from dotenv import load_dotenv
+
+load_dotenv()
+botToken = os.getenv('TELEGRAM_BOT_TOKEN')
 
 tipoEmpresa = get_company_details()["tipo"]
 
@@ -49,7 +53,7 @@ async def save_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == '__main__':
-    application = ApplicationBuilder().token('7377251673:AAHp--UAvvaL-A7vSoHyKOa1d3NRIpZ33P8').build()
+    application = ApplicationBuilder().token(botToken).build()
     application.add_handler(CommandHandler('start', start))
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), save_message))
     application.run_polling()
